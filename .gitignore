@@ -55,6 +55,8 @@ docker-compose.override.yml
 # Logs
 *.log
 logs/
+log/
+*.log.*
 
 # Database
 *.sqlite3
@@ -72,3 +74,46 @@ logs/
 
 # NetBox media files
 netbox/media/
+
+# Backup files
+backups/
+*.backup
+*.bak
+*.dump
+*.sql
+
+# Documentation builds
+docs/_build/
+docs/site/
+site/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Monitoring and metrics
+monitoring/data/
+prometheus_data/
+grafana_data/
+
+# Development overrides
+docker-compose.dev.yml
+filebrowser.db
+filebrowser.json
+
+# SSL certificates
+ssl/
+certs/
+*.pem
+*.crt
+*.key
+
+# Local configuration
+local_settings.py
+local_config.py
