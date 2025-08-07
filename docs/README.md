@@ -39,7 +39,7 @@ Detailed technical implementation covering:
 
 ### 2. System Diagrams
 
-#### [01 - System Architecture Level 1](./diagrams/01_system_architecture_level1.drawio.svg)
+#### [01 - System Architecture Level 1](./diagrams/01_system_architecture_level1.md)
 High-level system overview showing:
 - User interfaces and external systems
 - Core system layers (Web, API, Orchestration, Services)
@@ -47,7 +47,7 @@ High-level system overview showing:
 - External NetBox integration
 - System boundaries and data flow
 
-#### [02 - Component Architecture Level 2](./diagrams/02_component_architecture_level2.drawio.svg)
+#### [02 - Component Architecture Level 2](./diagrams/02_component_architecture_level2.md)
 Detailed component architecture including:
 - Frontend container (React components)
 - Backend container (Python/FastAPI layers)
@@ -57,7 +57,7 @@ Detailed component architecture including:
 - Data access and storage layers
 - External integrations
 
-#### [03 - Vendor Import Workflow](./diagrams/03_vendor_import_workflow.drawio.svg)
+#### [03 - Vendor Import Workflow](./diagrams/03_vendor_import_workflow.md)
 Current workflow implementation showing:
 - Complete vendor import process flow
 - Form validation and processing
@@ -66,7 +66,7 @@ Current workflow implementation showing:
 - Performance and error handling details
 - Decision points and data flow
 
-#### [04 - Data Flow Integration](./diagrams/04_data_flow_integration.drawio.svg)
+#### [04 - Data Flow Integration](./diagrams/04_data_flow_integration.md)
 Data flow and integration patterns:
 - User interface to API gateway flow
 - Data processing and transformation layers
@@ -75,7 +75,7 @@ Data flow and integration patterns:
 - Real-time updates and caching
 - Sample data examples
 
-#### [05 - Sequence Diagram Workflow](./diagrams/05_sequence_diagram_workflow.drawio.svg)
+#### [05 - Sequence Diagram Workflow](./diagrams/05_sequence_diagram_workflow.md)
 Complete interaction sequence:
 - User input to final results timeline
 - System component interactions
@@ -83,6 +83,13 @@ Complete interaction sequence:
 - NetBox API integration calls
 - Real-time progress updates
 - Timing annotations and performance notes
+
+#### [06 - Product Roadmap Kanban](./diagrams/06_product_roadmap_kanban.md)
+Development roadmap and project management:
+- Current sprint progress
+- Feature backlog and prioritization
+- Timeline and milestone tracking
+- Resource allocation and planning
 
 ## System Context
 
