@@ -3,7 +3,7 @@ services:
     container_name: postgres
     image: "postgres:14"
     ports:
-      - "5432:5432"
+      - "5433:5432"  # Changed from 5432:5432 to avoid conflict with NetBox postgres
     environment:
       POSTGRES_USER: nwa
       POSTGRES_PASSWORD: nwa
@@ -92,6 +92,7 @@ services:
       - ./templates:/home/orchestrator/templates
       - ./docker/orchestrator/.bashrc:/home/orchestrator/.bashrc
       - ${CORE_DIR:-./docker/overrides/orchestrator-core}:/home/orchestrator/orchestrator-core
+      - ../devicetype-library:/home/orchestrator/devicetype-library
     entrypoint: ["/home/orchestrator/etc/orchestrator/entrypoint.sh"]
     depends_on:
       postgres:

@@ -31,9 +31,22 @@ A comprehensive Proof of Concept (POC) demonstrating Intent-Based Networking (IB
    docker-compose up -d
    ```
 
-4. **Import Device Types**
+4. **Import Data from Devicetype Library**
+   
+   **Option A: Web UI (Recommended)**
    ```bash
-   python device_import.py
+   # Open http://localhost:3000 in your browser
+   # Navigate to "Workflows" and run:
+   # - task_import_vendors (import manufacturers)
+   # - task_import_device_types (import device types)
+   ```
+   
+   **Option B: Command Line**
+   ```bash
+   make import-all-devicetypes    # Import vendors + device types
+   # OR use individual scripts:
+   python3 vendor_import.py       # Import vendors/manufacturers
+   python3 device_type_import.py --limit 50  # Import device types
    ```
 
 5. **Access the Applications**
