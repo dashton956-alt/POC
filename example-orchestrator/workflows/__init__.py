@@ -40,3 +40,5 @@ LazyWorkflowInstance("workflows.l2vpn.validate_l2vpn", "validate_l2vpn")
 
 LazyWorkflowInstance("workflows.tasks.bootstrap_netbox", "task_bootstrap_netbox")
 LazyWorkflowInstance("workflows.tasks.wipe_netbox", "task_wipe_netbox")
+LazyWorkflowInstance("workflows.tasks.import_vendors", "task_import_vendors")
+LazyWorkflowInstance("workflows.tasks.device_types", "task_import_device_types")

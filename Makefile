@@ -5,13 +5,14 @@
 
 # Default target
 help:
-	@echo "NetBox Orchestrator POC - Available Commands:"
+	@echo "🏠 NetBox Orchestrator POC - Available Commands:"
 	@echo ""
 	@echo "🚀 Quick Start:"
 	@echo "  make install          - Install dependencies and setup environment"
-	@echo "  make start           - Start all services"
+	@echo "  make start           - Start all services (NetBox + Orchestrator)"
 	@echo "  make stop            - Stop all services"
 	@echo "  make restart         - Restart all services"
+	@echo "  make health          - Check service health"
 	@echo ""
 	@echo "🔧 Development:"
 	@echo "  make dev             - Start in development mode"
@@ -19,6 +20,22 @@ help:
 	@echo "  make shell           - Open shell in orchestrator container"
 	@echo "  make netbox-shell    - Open shell in NetBox container"
 	@echo "  make db-shell        - Open database shell"
+	@echo ""
+	@echo "📥 Data Import (Standalone Scripts):"
+	@echo "  make import-vendors           - Import vendors from devicetype-library"
+	@echo "  make import-device-types      - Import device types (limited to 50)"
+	@echo "  make import-all-devicetypes   - Import vendors + device types"
+	@echo "  make list-vendors            - List available vendors"
+	@echo "  make list-device-types       - List available device types"
+	@echo "  make import-vendors-stats    - Show vendor statistics"
+	@echo "  make import-device-types-stats - Show device type statistics"
+	@echo ""
+	@echo "🔧 Orchestrator Workflows:"
+	@echo "  🌐 Web UI (Recommended): http://localhost:3000"
+	@echo "  🔬 GraphQL Playground:   http://localhost:8080/graphql"
+	@echo "  make list-workflows   - Show available orchestrator workflows"
+	@echo "  Available via UI/API: - task_bootstrap_netbox, task_wipe_netbox"
+	@echo "                       - task_import_vendors, task_import_device_types"
 	@echo ""
 	@echo "🧪 Testing & Quality:"
 	@echo "  make test            - Run all tests"
@@ -28,6 +45,20 @@ help:
 	@echo "  make format          - Format code with Black"
 	@echo "  make type-check      - Run type checking with mypy"
 	@echo ""
+	@echo "💾 Backup & Restore:"
+	@echo "  make backup          - Backup all databases"
+	@echo "  make restore         - List available backups"
+	@echo "  make restore-file FILE=backup.sql - Restore from specific backup"
+	@echo ""
+	@echo "🌐 URLs:"
+	@echo "  NetBox:     http://localhost:8000"
+	@echo "  Orchestrator: http://localhost:8080 (API), http://localhost:3000 (UI)"
+	@echo ""
+	@echo "💡 For more details, see README.md"
+
+list-workflows:
+	@echo "🔧 Listing available orchestrator workflows..."
+	python3 list_workflows.py
 	@echo "📊 Data Management:"
 	@echo "  make import-devices  - Import device types"
 	@echo "  make backup          - Backup databases"
@@ -168,6 +199,53 @@ import-devices-dry:
 import-cisco:
 	@echo "📥 Importing Cisco device types..."
 	python device_import.py --vendor cisco
+
+# Devicetype Library imports
+import-vendors:
+	@echo "📥 Importing vendors from devicetype-library..."
+	python3 vendor_import.py
+	@echo "✅ Vendor import complete!"
+
+import-vendors-dry:
+	@echo "📥 Dry run - importing vendors from devicetype-library..."
+	python3 vendor_import.py --dry-run
+
+import-vendors-stats:
+	@echo "📊 Vendor import statistics..."
+	python3 vendor_import.py --stats
+
+import-device-types:
+	@echo "📥 Importing device types from devicetype-library..."
+	python3 device_type_import.py --limit 50
+	@echo "✅ Device type import complete!"
+
+import-device-types-dry:
+	@echo "📥 Dry run - importing device types from devicetype-library..."
+	python3 device_type_import.py --dry-run --limit 50
+
+import-device-types-cisco:
+	@echo "📥 Importing Cisco device types from devicetype-library..."
+	python3 device_type_import.py --vendor Cisco
+
+import-device-types-stats:
+	@echo "📊 Device type import statistics..."
+	python3 device_type_import.py --stats
+
+import-all-devicetypes:
+	@echo "📥 Comprehensive import from devicetype-library..."
+	@echo "Step 1: Importing vendors..."
+	python3 vendor_import.py
+	@echo "Step 2: Importing device types (limited to 100)..."
+	python3 device_type_import.py --limit 100
+	@echo "✅ Comprehensive devicetype-library import complete!"
+
+list-vendors:
+	@echo "📋 Available vendors in devicetype-library..."
+	python3 vendor_import.py --list
+
+list-device-types:
+	@echo "📋 Available device types in devicetype-library..."
+	python3 device_type_import.py --list
 
 # Backup and restore
 backup:
