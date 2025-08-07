@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- saved from url=(0014)about:internet -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1400px" height="1000px" viewBox="-0.5 -0.5 1400 1000" style="background-color: rgb(255, 255, 255);" content="&lt;mxfile&gt;&lt;diagram&gt;&lt;mxGraphModel&gt;&lt;/mxGraphModel&gt;&lt;/diagram&gt;&lt;/mxfile&gt;">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="700" y="30" text-anchor="middle" style="font-size: 24px; font-weight: bold; font-family: Arial;">
+    IaC Intent-Based Networking System - Level 2 Component Architecture
+  </text>
+  
+  <!-- Frontend Container -->
+  <rect x="50" y="80" width="400" height="300" rx="15" ry="15" fill="#e3f2fd" stroke="#1976d2" stroke-width="3"/>
+  <text x="250" y="105" text-anchor="middle" style="font-size: 16px; font-weight: bold;">Frontend Container (React)</text>
+  
+  <!-- React Components -->
+  <rect x="80" y="130" width="150" height="80" rx="8" ry="8" fill="#ffffff" stroke="#1976d2"/>
+  <text x="155" y="155" text-anchor="middle" style="font-size: 12px; font-weight: bold;">Workflow Manager</text>
+  <text x="155" y="175" text-anchor="middle" style="font-size: 10px;">Process Lists</text>
+  <text x="155" y="190" text-anchor="middle" style="font-size: 10px;">Status Monitoring</text>
+  
+  <rect x="270" y="130" width="150" height="80" rx="8" ry="8" fill="#ffffff" stroke="#1976d2"/>
+  <text x="345" y="155" text-anchor="middle" style="font-size: 12px; font-weight: bold;">Form Builder</text>
+  <text x="345" y="175" text-anchor="middle" style="font-size: 10px;">Dynamic Forms</text>
+  <text x="345" y="190" text-anchor="middle" style="font-size: 10px;">Validation</text>
+  
+  <rect x="80" y="240" width="150" height="80" rx="8" ry="8" fill="#ffffff" stroke="#1976d2"/>
+  <text x="155" y="265" text-anchor="middle" style="font-size: 12px; font-weight: bold;">Dashboard</text>
+  <text x="155" y="285" text-anchor="middle" style="font-size: 10px;">System Status</text>
+  <text x="155" y="300" text-anchor="middle" style="font-size: 10px;">Analytics</text>
+  
+  <rect x="270" y="240" width="150" height="80" rx="8" ry="8" fill="#ffffff" stroke="#1976d2"/>
+  <text x="345" y="265" text-anchor="middle" style="font-size: 12px; font-weight: bold;">Real-time Updates</text>
+  <text x="345" y="285" text-anchor="middle" style="font-size: 10px;">WebSocket Client</text>
+  <text x="345" y="300" text-anchor="middle" style="font-size: 10px;">Live Notifications</text>
+  
+  <!-- Backend Container -->
+  <rect x="550" y="80" width="750" height="650" rx="15" ry="15" fill="#fff3e0" stroke="#f57c00" stroke-width="3"/>
+  <text x="925" y="105" text-anchor="middle" style="font-size: 16px; font-weight: bold;">Backend Container (Python/FastAPI)</text>
+  
+  <!-- API Gateway -->
+  <rect x="580" y="130" width="680" height="100" rx="10" ry="10" fill="#e8f5e8" stroke="#388e3c" stroke-width="2"/>
+  <text x="920" y="155" text-anchor="middle" style="font-size: 14px; font-weight: bold;">API Gateway Layer</text>
+  
+  <rect x="600" y="170" width="130" height="50" rx="5" ry="5" fill="#ffffff" stroke="#388e3c"/>
+  <text x="665" y="190" text-anchor="middle" style="font-size: 11px;">REST Endpoints</text>
+  <text x="665" y="205" text-anchor="middle" style="font-size: 9px;">FastAPI Routes</text>
+  
+  <rect x="750" y="170" width="130" height="50" rx="5" ry="5" fill="#ffffff" stroke="#388e3c"/>
+  <text x="815" y="190" text-anchor="middle" style="font-size: 11px;">GraphQL API</text>
+  <text x="815" y="205" text-anchor="middle" style="font-size: 9px;">Strawberry</text>
+  
+  <rect x="900" y="170" width="130" height="50" rx="5" ry="5" fill="#ffffff" stroke="#388e3c"/>
+  <text x="965" y="190" text-anchor="middle" style="font-size: 11px;">Middleware</text>
+  <text x="965" y="205" text-anchor="middle" style="font-size: 9px;">Auth/CORS/Logging</text>
+  
+  <rect x="1050" y="170" width="130" height="50" rx="5" ry="5" fill="#ffffff" stroke="#388e3c"/>
+  <text x="1115" y="190" text-anchor="middle" style="font-size: 11px;">WebSocket</text>
+  <text x="1115" y="205" text-anchor="middle" style="font-size: 9px;">Real-time Events</text>
+  
+  <!-- Orchestration Engine -->
+  <rect x="580" y="260" width="680" height="120" rx="10" ry="10" fill="#fff8e1" stroke="#ffa000" stroke-width="2"/>
+  <text x="920" y="285" text-anchor="middle" style="font-size: 14px; font-weight: bold;">Workflow Orchestration Engine</text>
+  
+  <rect x="600" y="300" width="130" height="70" rx="5" ry="5" fill="#ffffff" stroke="#ffa000"/>
+  <text x="665" y="325" text-anchor="middle" style="font-size: 11px;">Workflow Core</text>
+  <text x="665" y="340" text-anchor="middle" style="font-size: 9px;">Process Manager</text>
+  <text x="665" y="355" text-anchor="middle" style="font-size: 9px;">State Machine</text>
+  
+  <rect x="750" y="300" width="130" height="70" rx="5" ry="5" fill="#ffffff" stroke="#ffa000"/>
+  <text x="815" y="325" text-anchor="middle" style="font-size: 11px;">Form Engine</text>
+  <text x="815" y="340" text-anchor="middle" style="font-size: 9px;">Pydantic Forms</text>
+  <text x="815" y="355" text-anchor="middle" style="font-size: 9px;">Validation</text>
+  
+  <rect x="900" y="300" width="130" height="70" rx="5" ry="5" fill="#ffffff" stroke="#ffa000"/>
+  <text x="965" y="325" text-anchor="middle" style="font-size: 11px;">Task Executor</text>
+  <text x="965" y="340" text-anchor="middle" style="font-size: 9px;">Step Processing</text>
+  <text x="965" y="355" text-anchor="middle" style="font-size: 9px;">Error Handling</text>
+  
+  <rect x="1050" y="300" width="130" height="70" rx="5" ry="5" fill="#ffffff" stroke="#ffa000"/>
+  <text x="1115" y="325" text-anchor="middle" style="font-size: 11px;">Event Publisher</text>
+  <text x="1115" y="340" text-anchor="middle" style="font-size: 9px;">Redis Pub/Sub</text>
+  <text x="1115" y="355" text-anchor="middle" style="font-size: 9px;">Notifications</text>
+  
+  <!-- Business Logic Layer -->
+  <rect x="580" y="400" width="680" height="120" rx="10" ry="10" fill="#fce4ec" stroke="#c2185b" stroke-width="2"/>
+  <text x="920" y="425" text-anchor="middle" style="font-size: 14px; font-weight: bold;">Business Logic Layer</text>
+  
+  <rect x="600" y="440" width="130" height="70" rx="5" ry="5" fill="#ffffff" stroke="#c2185b"/>
+  <text x="665" y="465" text-anchor="middle" style="font-size: 11px;">Workflow Service</text>
+  <text x="665" y="480" text-anchor="middle" style="font-size: 9px;">Process Logic</text>
+  <text x="665" y="495" text-anchor="middle" style="font-size: 9px;">State Management</text>
+  
+  <rect x="750" y="440" width="130" height="70" rx="5" ry="5" fill="#ffffff" stroke="#c2185b"/>
+  <text x="815" y="465" text-anchor="middle" style="font-size: 11px;">NetBox Service</text>
+  <text x="815" y="480" text-anchor="middle" style="font-size: 9px;">API Integration</text>
+  <text x="815" y="495" text-anchor="middle" style="font-size: 9px;">Data Mapping</text>
+  
+  <rect x="900" y="440" width="130" height="70" rx="5" ry="5" fill="#ffffff" stroke="#c2185b"/>
+  <text x="965" y="465" text-anchor="middle" style="font-size: 11px;">Device Library</text>
+  <text x="965" y="480" text-anchor="middle" style="font-size: 9px;">YAML Parser</text>
+  <text x="965" y="495" text-anchor="middle" style="font-size: 9px;">Vendor Manager</text>
+  
+  <rect x="1050" y="440" width="130" height="70" rx="5" ry="5" fill="#ffffff" stroke="#c2185b"/>
+  <text x="1115" y="465" text-anchor="middle" style="font-size: 11px;">Validation</text>
+  <text x="1115" y="480" text-anchor="middle" style="font-size: 9px;">Data Validation</text>
+  <text x="1115" y="495" text-anchor="middle" style="font-size: 9px;">Business Rules</text>
+  
+  <!-- Data Access Layer -->
+  <rect x="580" y="540" width="680" height="120" rx="10" ry="10" fill="#e1f5fe" stroke="#0277bd" stroke-width="2"/>
+  <text x="920" y="565" text-anchor="middle" style="font-size: 14px; font-weight: bold;">Data Access Layer</text>
+  
+  <rect x="600" y="580" width="130" height="70" rx="5" ry="5" fill="#ffffff" stroke="#0277bd"/>
+  <text x="665" y="605" text-anchor="middle" style="font-size: 11px;">Database ORM</text>
+  <text x="665" y="620" text-anchor="middle" style="font-size: 9px;">SQLAlchemy</text>
+  <text x="665" y="635" text-anchor="middle" style="font-size: 9px;">Async Support</text>
+  
+  <rect x="750" y="580" width="130" height="70" rx="5" ry="5" fill="#ffffff" stroke="#0277bd"/>
+  <text x="815" y="605" text-anchor="middle" style="font-size: 11px;">Repository</text>
+  <text x="815" y="620" text-anchor="middle" style="font-size: 9px;">Data Models</text>
+  <text x="815" y="635" text-anchor="middle" style="font-size: 9px;">CRUD Operations</text>
+  
+  <rect x="900" y="580" width="130" height="70" rx="5" ry="5" fill="#ffffff" stroke="#0277bd"/>
+  <text x="965" y="605" text-anchor="middle" style="font-size: 11px;">Cache Manager</text>
+  <text x="965" y="620" text-anchor="middle" style="font-size: 9px;">Redis Client</text>
+  <text x="965" y="635" text-anchor="middle" style="font-size: 9px;">Session Store</text>
+  
+  <rect x="1050" y="580" width="130" height="70" rx="5" ry="5" fill="#ffffff" stroke="#0277bd"/>
+  <text x="1115" y="605" text-anchor="middle" style="font-size: 11px;">File Access</text>
+  <text x="1115" y="620" text-anchor="middle" style="font-size: 9px;">Device Types</text>
+  <text x="1115" y="635" text-anchor="middle" style="font-size: 9px;">Configuration</text>
+  
+  <!-- Integration Layer -->
+  <rect x="580" y="680" width="680" height="70" rx="10" ry="10" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2"/>
+  <text x="920" y="705" text-anchor="middle" style="font-size: 14px; font-weight: bold;">External Integration Layer</text>
+  
+  <rect x="700" y="720" width="130" height="40" rx="5" ry="5" fill="#ffffff" stroke="#7b1fa2"/>
+  <text x="765" y="735" text-anchor="middle" style="font-size: 11px;">NetBox Client</text>
+  <text x="765" y="750" text-anchor="middle" style="font-size: 9px;">HTTP Client</text>
+  
+  <rect x="850" y="720" width="130" height="40" rx="5" ry="5" fill="#ffffff" stroke="#7b1fa2"/>
+  <text x="915" y="735" text-anchor="middle" style="font-size: 11px;">Git Integration</text>
+  <text x="915" y="750" text-anchor="middle" style="font-size: 9px;">(Future)</text>
+  
+  <rect x="1000" y="720" width="130" height="40" rx="5" ry="5" fill="#ffffff" stroke="#7b1fa2"/>
+  <text x="1065" y="735" text-anchor="middle" style="font-size: 11px;">Ansible Client</text>
+  <text x="1065" y="750" text-anchor="middle" style="font-size: 9px;">(Future)</text>
+  
+  <!-- Data Stores -->
+  <rect x="100" y="800" width="180" height="120" rx="10" ry="10" fill="#e8f5e8" stroke="#4caf50" stroke-width="2"/>
+  <text x="190" y="825" text-anchor="middle" style="font-size: 14px; font-weight: bold;">PostgreSQL</text>
+  <text x="190" y="845" text-anchor="middle" style="font-size: 11px;">Primary Database</text>
+  
+  <rect x="120" y="860" width="60" height="25" rx="3" ry="3" fill="#ffffff" stroke="#4caf50"/>
+  <text x="150" y="875" text-anchor="middle" style="font-size: 9px;">Workflows</text>
+  
+  <rect x="190" y="860" width="60" height="25" rx="3" ry="3" fill="#ffffff" stroke="#4caf50"/>
+  <text x="220" y="875" text-anchor="middle" style="font-size: 9px;">Processes</text>
+  
+  <rect x="120" y="890" width="60" height="25" rx="3" ry="3" fill="#ffffff" stroke="#4caf50"/>
+  <text x="150" y="905" text-anchor="middle" style="font-size: 9px;">Steps</text>
+  
+  <rect x="190" y="890" width="60" height="25" rx="3" ry="3" fill="#ffffff" stroke="#4caf50"/>
+  <text x="220" y="905" text-anchor="middle" style="font-size: 9px;">Audit Log</text>
+  
+  <rect x="320" y="800" width="180" height="120" rx="10" ry="10" fill="#ffebee" stroke="#f44336" stroke-width="2"/>
+  <text x="410" y="825" text-anchor="middle" style="font-size: 14px; font-weight: bold;">Redis</text>
+  <text x="410" y="845" text-anchor="middle" style="font-size: 11px;">Cache &amp; Queue</text>
+  
+  <rect x="340" y="860" width="60" height="25" rx="3" ry="3" fill="#ffffff" stroke="#f44336"/>
+  <text x="370" y="875" text-anchor="middle" style="font-size: 9px;">Sessions</text>
+  
+  <rect x="410" y="860" width="60" height="25" rx="3" ry="3" fill="#ffffff" stroke="#f44336"/>
+  <text x="440" y="875" text-anchor="middle" style="font-size: 9px;">Tasks</text>
+  
+  <rect x="340" y="890" width="60" height="25" rx="3" ry="3" fill="#ffffff" stroke="#f44336"/>
+  <text x="370" y="905" text-anchor="middle" style="font-size: 9px;">Cache</text>
+  
+  <rect x="410" y="890" width="60" height="25" rx="3" ry="3" fill="#ffffff" stroke="#f44336"/>
+  <text x="440" y="905" text-anchor="middle" style="font-size: 9px;">Pub/Sub</text>
+  
+  <rect x="540" y="800" width="180" height="120" rx="10" ry="10" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/>
+  <text x="630" y="825" text-anchor="middle" style="font-size: 14px; font-weight: bold;">File System</text>
+  <text x="630" y="845" text-anchor="middle" style="font-size: 11px;">Device Library</text>
+  
+  <rect x="560" y="860" width="60" height="25" rx="3" ry="3" fill="#ffffff" stroke="#ff9800"/>
+  <text x="590" y="875" text-anchor="middle" style="font-size: 9px;">YAML Files</text>
+  
+  <rect x="630" y="860" width="60" height="25" rx="3" ry="3" fill="#ffffff" stroke="#ff9800"/>
+  <text x="660" y="875" text-anchor="middle" style="font-size: 9px;">Logs</text>
+  
+  <rect x="560" y="890" width="60" height="25" rx="3" ry="3" fill="#ffffff" stroke="#ff9800"/>
+  <text x="590" y="905" text-anchor="middle" style="font-size: 9px;">Config</text>
+  
+  <rect x="630" y="890" width="60" height="25" rx="3" ry="3" fill="#ffffff" stroke="#ff9800"/>
+  <text x="660" y="905" text-anchor="middle" style="font-size: 9px;">Templates</text>
+  
+  <!-- External NetBox -->
+  <rect x="1000" y="800" width="300" height="120" rx="10" ry="10" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2"/>
+  <text x="1150" y="825" text-anchor="middle" style="font-size: 14px; font-weight: bold;">NetBox Instance</text>
+  <text x="1150" y="845" text-anchor="middle" style="font-size: 11px;">External DCIM/IPAM System</text>
+  
+  <rect x="1020" y="860" width="80" height="25" rx="3" ry="3" fill="#ffffff" stroke="#9c27b0"/>
+  <text x="1060" y="875" text-anchor="middle" style="font-size: 9px;">Manufacturers</text>
+  
+  <rect x="1110" y="860" width="80" height="25" rx="3" ry="3" fill="#ffffff" stroke="#9c27b0"/>
+  <text x="1150" y="875" text-anchor="middle" style="font-size: 9px;">Device Types</text>
+  
+  <rect x="1200" y="860" width="80" height="25" rx="3" ry="3" fill="#ffffff" stroke="#9c27b0"/>
+  <text x="1240" y="875" text-anchor="middle" style="font-size: 9px;">Devices</text>
+  
+  <rect x="1020" y="890" width="80" height="25" rx="3" ry="3" fill="#ffffff" stroke="#9c27b0"/>
+  <text x="1060" y="905" text-anchor="middle" style="font-size: 9px;">IP Addresses</text>
+  
+  <rect x="1110" y="890" width="80" height="25" rx="3" ry="3" fill="#ffffff" stroke="#9c27b0"/>
+  <text x="1150" y="905" text-anchor="middle" style="font-size: 9px;">Racks</text>
+  
+  <rect x="1200" y="890" width="80" height="25" rx="3" ry="3" fill="#ffffff" stroke="#9c27b0"/>
+  <text x="1240" y="905" text-anchor="middle" style="font-size: 9px;">Sites</text>
+  
+  <!-- Communication Arrows -->
+  <!-- Frontend to Backend -->
+  <line x1="450" y1="230" x2="580" y2="180" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="515" y="200" style="font-size: 10px;">HTTP/WebSocket</text>
+  
+  <!-- Internal Backend Arrows -->
+  <line x1="920" y1="230" x2="920" y2="260" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="920" y1="380" x2="920" y2="400" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="920" y1="520" x2="920" y2="540" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="920" y1="660" x2="920" y2="680" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Data Access to Stores -->
+  <line x1="665" y1="650" x2="190" y2="800" stroke="#333" stroke-width="2"/>
+  <line x1="815" y1="650" x2="410" y2="800" stroke="#333" stroke-width="2"/>
+  <line x1="965" y1="650" x2="410" y2="800" stroke="#333" stroke-width="2"/>
+  <line x1="1115" y1="650" x2="630" y2="800" stroke="#333" stroke-width="2"/>
+  
+  <!-- Integration to NetBox -->
+  <line x1="900" y1="750" x2="1000" y2="860" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="950" y="805" style="font-size: 10px;">REST API</text>
+  
+  <!-- Legend -->
+  <rect x="50" y="950" width="1300" height="40" fill="#f5f5f5" stroke="#ccc"/>
+  <text x="70" y="970" style="font-size: 12px; font-weight: bold;">Legend:</text>
+  <rect x="130" y="960" width="15" height="15" fill="#e3f2fd" stroke="#1976d2"/>
+  <text x="155" y="972" style="font-size: 10px;">Frontend</text>
+  <rect x="220" y="960" width="15" height="15" fill="#fff3e0" stroke="#f57c00"/>
+  <text x="245" y="972" style="font-size: 10px;">Backend</text>
+  <rect x="310" y="960" width="15" height="15" fill="#e8f5e8" stroke="#388e3c"/>
+  <text x="335" y="972" style="font-size: 10px;">API</text>
+  <rect x="370" y="960" width="15" height="15" fill="#fff8e1" stroke="#ffa000"/>
+  <text x="395" y="972" style="font-size: 10px;">Orchestration</text>
+  <rect x="490" y="960" width="15" height="15" fill="#fce4ec" stroke="#c2185b"/>
+  <text x="515" y="972" style="font-size: 10px;">Business Logic</text>
+  <rect x="610" y="960" width="15" height="15" fill="#e1f5fe" stroke="#0277bd"/>
+  <text x="635" y="972" style="font-size: 10px;">Data Access</text>
+  <rect x="720" y="960" width="15" height="15" fill="#f3e5f5" stroke="#7b1fa2"/>
+  <text x="745" y="972" style="font-size: 10px;">Integration</text>
+  <rect x="830" y="960" width="15" height="15" fill="#e8f5e8" stroke="#4caf50"/>
+  <text x="855" y="972" style="font-size: 10px;">Database</text>
+  <rect x="930" y="960" width="15" height="15" fill="#ffebee" stroke="#f44336"/>
+  <text x="955" y="972" style="font-size: 10px;">Cache</text>
+  <rect x="1000" y="960" width="15" height="15" fill="#fff3e0" stroke="#ff9800"/>
+  <text x="1025" y="972" style="font-size: 10px;">File System</text>
+  <rect x="1110" y="960" width="15" height="15" fill="#f3e5f5" stroke="#9c27b0"/>
+  <text x="1135" y="972" style="font-size: 10px;">External</text>
+</svg>

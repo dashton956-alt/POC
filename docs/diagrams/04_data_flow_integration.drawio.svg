@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- saved from url=(0014)about:internet -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1400px" height="900px" viewBox="-0.5 -0.5 1400 900" style="background-color: rgb(255, 255, 255);" content="&lt;mxfile&gt;&lt;diagram&gt;&lt;mxGraphModel&gt;&lt;/mxGraphModel&gt;&lt;/diagram&gt;&lt;/mxfile&gt;">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+    <marker id="dataflow" markerWidth="12" markerHeight="8" refX="12" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8, 3 4" fill="#1976d2" stroke="#0d47a1"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="700" y="30" text-anchor="middle" style="font-size: 24px; font-weight: bold; font-family: Arial;">
+    Data Flow and Integration Architecture
+  </text>
+  
+  <!-- User Layer -->
+  <rect x="50" y="80" width="300" height="120" rx="15" ry="15" fill="#e3f2fd" stroke="#1976d2" stroke-width="2"/>
+  <text x="200" y="105" text-anchor="middle" style="font-size: 16px; font-weight: bold;">User Interface Layer</text>
+  
+  <rect x="80" y="120" width="100" height="60" rx="8" ry="8" fill="#ffffff" stroke="#1976d2"/>
+  <text x="130" y="145" text-anchor="middle" style="font-size: 12px;">Web Browser</text>
+  <text x="130" y="165" text-anchor="middle" style="font-size: 10px;">React SPA</text>
+  
+  <rect x="220" y="120" width="100" height="60" rx="8" ry="8" fill="#ffffff" stroke="#1976d2"/>
+  <text x="270" y="145" text-anchor="middle" style="font-size: 12px;">Form Data</text>
+  <text x="270" y="165" text-anchor="middle" style="font-size: 10px;">JSON Payload</text>
+  
+  <!-- API Gateway -->
+  <rect x="450" y="80" width="500" height="120" rx="15" ry="15" fill="#e8f5e8" stroke="#388e3c" stroke-width="2"/>
+  <text x="700" y="105" text-anchor="middle" style="font-size: 16px; font-weight: bold;">API Gateway Layer</text>
+  
+  <rect x="480" y="120" width="100" height="60" rx="8" ry="8" fill="#ffffff" stroke="#388e3c"/>
+  <text x="530" y="145" text-anchor="middle" style="font-size: 12px;">FastAPI</text>
+  <text x="530" y="165" text-anchor="middle" style="font-size: 10px;">HTTP Handler</text>
+  
+  <rect x="620" y="120" width="100" height="60" rx="8" ry="8" fill="#ffffff" stroke="#388e3c"/>
+  <text x="670" y="145" text-anchor="middle" style="font-size: 12px;">Validation</text>
+  <text x="670" y="165" text-anchor="middle" style="font-size: 10px;">Pydantic</text>
+  
+  <rect x="760" y="120" width="100" height="60" rx="8" ry="8" fill="#ffffff" stroke="#388e3c"/>
+  <text x="810" y="145" text-anchor="middle" style="font-size: 12px;">Serialization</text>
+  <text x="810" y="165" text-anchor="middle" style="font-size: 10px;">JSON/Dict</text>
+  
+  <!-- Orchestration Layer -->
+  <rect x="1050" y="80" width="300" height="120" rx="15" ry="15" fill="#fff3e0" stroke="#f57c00" stroke-width="2"/>
+  <text x="1200" y="105" text-anchor="middle" style="font-size: 16px; font-weight: bold;">Orchestration Engine</text>
+  
+  <rect x="1080" y="120" width="100" height="60" rx="8" ry="8" fill="#ffffff" stroke="#f57c00"/>
+  <text x="1130" y="145" text-anchor="middle" style="font-size: 12px;">Workflow</text>
+  <text x="1130" y="165" text-anchor="middle" style="font-size: 10px;">State Machine</text>
+  
+  <rect x="1220" y="120" width="100" height="60" rx="8" ry="8" fill="#ffffff" stroke="#f57c00"/>
+  <text x="1270" y="145" text-anchor="middle" style="font-size: 12px;">Process</text>
+  <text x="1270" y="165" text-anchor="middle" style="font-size: 10px;">Execution</text>
+  
+  <!-- Data Processing Layer -->
+  <rect x="200" y="250" width="1000" height="150" rx="15" ry="15" fill="#fff8e1" stroke="#ffa000" stroke-width="3"/>
+  <text x="700" y="275" text-anchor="middle" style="font-size: 16px; font-weight: bold;">Data Processing & Transformation</text>
+  
+  <!-- Form Data Processing -->
+  <rect x="230" y="290" width="180" height="100" rx="10" ry="10" fill="#e1f5fe" stroke="#0277bd" stroke-width="2"/>
+  <text x="320" y="315" text-anchor="middle" style="font-size: 14px; font-weight: bold;">Form Data</text>
+  
+  <rect x="250" y="330" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#0277bd"/>
+  <text x="285" y="348" text-anchor="middle" style="font-size: 10px;">Extract</text>
+  
+  <rect x="330" y="330" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#0277bd"/>
+  <text x="365" y="348" text-anchor="middle" style="font-size: 10px;">Parse</text>
+  
+  <rect x="250" y="365" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#0277bd"/>
+  <text x="285" y="383" text-anchor="middle" style="font-size: 10px;">Validate</text>
+  
+  <rect x="330" y="365" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#0277bd"/>
+  <text x="365" y="383" text-anchor="middle" style="font-size: 10px;">Filter</text>
+  
+  <!-- Vendor Library Processing -->
+  <rect x="450" y="290" width="180" height="100" rx="10" ry="10" fill="#e8f5e8" stroke="#4caf50" stroke-width="2"/>
+  <text x="540" y="315" text-anchor="middle" style="font-size: 14px; font-weight: bold;">Library Scan</text>
+  
+  <rect x="470" y="330" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#4caf50"/>
+  <text x="505" y="348" text-anchor="middle" style="font-size: 10px;">Directory</text>
+  
+  <rect x="550" y="330" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#4caf50"/>
+  <text x="585" y="348" text-anchor="middle" style="font-size: 10px;">YAML</text>
+  
+  <rect x="470" y="365" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#4caf50"/>
+  <text x="505" y="383" text-anchor="middle" style="font-size: 10px;">Match</text>
+  
+  <rect x="550" y="365" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#4caf50"/>
+  <text x="585" y="383" text-anchor="middle" style="font-size: 10px;">Filter</text>
+  
+  <!-- Business Logic Processing -->
+  <rect x="670" y="290" width="180" height="100" rx="10" ry="10" fill="#fce4ec" stroke="#c2185b" stroke-width="2"/>
+  <text x="760" y="315" text-anchor="middle" style="font-size: 14px; font-weight: bold;">Business Logic</text>
+  
+  <rect x="690" y="330" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#c2185b"/>
+  <text x="725" y="348" text-anchor="middle" style="font-size: 10px;">Duplicate</text>
+  
+  <rect x="770" y="330" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#c2185b"/>
+  <text x="805" y="348" text-anchor="middle" style="font-size: 10px;">Transform</text>
+  
+  <rect x="690" y="365" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#c2185b"/>
+  <text x="725" y="383" text-anchor="middle" style="font-size: 10px;">Enrich</text>
+  
+  <rect x="770" y="365" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#c2185b"/>
+  <text x="805" y="383" text-anchor="middle" style="font-size: 10px;">Prepare</text>
+  
+  <!-- Output Processing -->
+  <rect x="890" y="290" width="180" height="100" rx="10" ry="10" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2"/>
+  <text x="980" y="315" text-anchor="middle" style="font-size: 14px; font-weight: bold;">Output Prep</text>
+  
+  <rect x="910" y="330" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#7b1fa2"/>
+  <text x="945" y="348" text-anchor="middle" style="font-size: 10px;">Batch</text>
+  
+  <rect x="990" y="330" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#7b1fa2"/>
+  <text x="1025" y="348" text-anchor="middle" style="font-size: 10px;">Serialize</text>
+  
+  <rect x="910" y="365" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#7b1fa2"/>
+  <text x="945" y="383" text-anchor="middle" style="font-size: 10px;">Queue</text>
+  
+  <rect x="990" y="365" width="70" height="30" rx="5" ry="5" fill="#ffffff" stroke="#7b1fa2"/>
+  <text x="1025" y="383" text-anchor="middle" style="font-size: 10px;">Track</text>
+  
+  <!-- Integration Services -->
+  <rect x="200" y="450" width="400" height="120" rx="15" ry="15" fill="#ffebee" stroke="#f44336" stroke-width="2"/>
+  <text x="400" y="475" text-anchor="middle" style="font-size: 16px; font-weight: bold;">Integration Services</text>
+  
+  <rect x="230" y="490" width="150" height="70" rx="8" ry="8" fill="#ffffff" stroke="#f44336"/>
+  <text x="305" y="515" text-anchor="middle" style="font-size: 12px;">NetBox Service</text>
+  <text x="305" y="535" text-anchor="middle" style="font-size: 10px;">REST Client</text>
+  <text x="305" y="550" text-anchor="middle" style="font-size: 10px;">Error Handling</text>
+  
+  <rect x="420" y="490" width="150" height="70" rx="8" ry="8" fill="#ffffff" stroke="#f44336"/>
+  <text x="495" y="515" text-anchor="middle" style="font-size: 12px;">Future Services</text>
+  <text x="495" y="535" text-anchor="middle" style="font-size: 10px;">Git/Ansible</text>
+  <text x="495" y="550" text-anchor="middle" style="font-size: 10px;">LDAP/SAML</text>
+  
+  <!-- Data Storage -->
+  <rect x="700" y="450" width="400" height="120" rx="15" ry="15" fill="#e1f5fe" stroke="#0277bd" stroke-width="2"/>
+  <text x="900" y="475" text-anchor="middle" style="font-size: 16px; font-weight: bold;">Data Storage Layer</text>
+  
+  <rect x="730" y="490" width="100" height="70" rx="8" ry="8" fill="#ffffff" stroke="#0277bd"/>
+  <text x="780" y="515" text-anchor="middle" style="font-size: 12px;">PostgreSQL</text>
+  <text x="780" y="535" text-anchor="middle" style="font-size: 10px;">Process State</text>
+  <text x="780" y="550" text-anchor="middle" style="font-size: 10px;">Audit Trail</text>
+  
+  <rect x="870" y="490" width="100" height="70" rx="8" ry="8" fill="#ffffff" stroke="#0277bd"/>
+  <text x="920" y="515" text-anchor="middle" style="font-size: 12px;">Redis</text>
+  <text x="920" y="535" text-anchor="middle" style="font-size: 10px;">Sessions</text>
+  <text x="920" y="550" text-anchor="middle" style="font-size: 10px;">Cache/Queue</text>
+  
+  <rect x="1010" y="490" width="100" height="70" rx="8" ry="8" fill="#ffffff" stroke="#0277bd"/>
+  <text x="1060" y="515" text-anchor="middle" style="font-size: 12px;">File System</text>
+  <text x="1060" y="535" text-anchor="middle" style="font-size: 10px;">Device Library</text>
+  <text x="1060" y="550" text-anchor="middle" style="font-size: 10px;">Logs/Config</text>
+  
+  <!-- External NetBox -->
+  <rect x="200" y="620" width="900" height="120" rx="15" ry="15" fill="#f3e5f5" stroke="#9c27b0" stroke-width="3"/>
+  <text x="650" y="645" text-anchor="middle" style="font-size: 16px; font-weight: bold;">External NetBox Instance</text>
+  
+  <rect x="230" y="660" width="150" height="70" rx="8" ry="8" fill="#ffffff" stroke="#9c27b0"/>
+  <text x="305" y="685" text-anchor="middle" style="font-size: 12px;">DCIM Module</text>
+  <text x="305" y="705" text-anchor="middle" style="font-size: 10px;">Manufacturers</text>
+  <text x="305" y="720" text-anchor="middle" style="font-size: 10px;">Device Types</text>
+  
+  <rect x="420" y="660" width="150" height="70" rx="8" ry="8" fill="#ffffff" stroke="#9c27b0"/>
+  <text x="495" y="685" text-anchor="middle" style="font-size: 12px;">IPAM Module</text>
+  <text x="495" y="705" text-anchor="middle" style="font-size: 10px;">IP Addresses</text>
+  <text x="495" y="720" text-anchor="middle" style="font-size: 10px;">Networks</text>
+  
+  <rect x="610" y="660" width="150" height="70" rx="8" ry="8" fill="#ffffff" stroke="#9c27b0"/>
+  <text x="685" y="685" text-anchor="middle" style="font-size: 12px;">REST API</text>
+  <text x="685" y="705" text-anchor="middle" style="font-size: 10px;">Authentication</text>
+  <text x="685" y="720" text-anchor="middle" style="font-size: 10px;">Rate Limiting</text>
+  
+  <rect x="800" y="660" width="150" height="70" rx="8" ry="8" fill="#ffffff" stroke="#9c27b0"/>
+  <text x="875" y="685" text-anchor="middle" style="font-size: 12px;">Database</text>
+  <text x="875" y="705" text-anchor="middle" style="font-size: 10px;">PostgreSQL</text>
+  <text x="875" y="720" text-anchor="middle" style="font-size: 10px;">Persistent Data</text>
+  
+  <!-- Data Flow Arrows -->
+  <!-- User to API -->
+  <line x1="350" y1="140" x2="450" y2="140" stroke="#1976d2" stroke-width="3" marker-end="url(#dataflow)"/>
+  <text x="400" y="130" text-anchor="middle" style="font-size: 10px; fill: #1976d2;">Form Data</text>
+  <text x="400" y="155" text-anchor="middle" style="font-size: 9px; fill: #1976d2;">{"selected_vendors": ["Cisco", "HP"]}</text>
+  
+  <!-- API to Orchestration -->
+  <line x1="950" y1="140" x2="1050" y2="140" stroke="#1976d2" stroke-width="3" marker-end="url(#dataflow)"/>
+  <text x="1000" y="130" text-anchor="middle" style="font-size: 10px; fill: #1976d2;">Validated Data</text>
+  
+  <!-- Orchestration to Processing -->
+  <line x1="1200" y1="200" x2="1200" y2="220" stroke="#1976d2" stroke-width="3"/>
+  <line x1="1200" y1="220" x2="700" y2="220" stroke="#1976d2" stroke-width="3"/>
+  <line x1="700" y1="220" x2="700" y2="250" stroke="#1976d2" stroke-width="3" marker-end="url(#dataflow)"/>
+  <text x="950" y="210" text-anchor="middle" style="font-size: 10px; fill: #1976d2;">Process Initiation</text>
+  
+  <!-- Internal Processing Flow -->
+  <line x1="410" y1="340" x2="450" y2="340" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="630" y1="340" x2="670" y2="340" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="850" y1="340" x2="890" y2="340" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Processing to Services -->
+  <line x1="400" y1="400" x2="400" y2="450" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Processing to Storage -->
+  <line x1="900" y1="400" x2="900" y2="450" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Services to NetBox -->
+  <line x1="305" y1="560" x2="305" y2="620" stroke="#9c27b0" stroke-width="3" marker-end="url(#dataflow)"/>
+  <text x="340" y="590" style="font-size: 10px; fill: #9c27b0;">API Calls</text>
+  
+  <!-- Return Data Flow -->
+  <line x1="685" y1="660" x2="685" y2="600" stroke="#4caf50" stroke-width="3"/>
+  <line x1="685" y1="600" x2="495" y2="600" stroke="#4caf50" stroke-width="3"/>
+  <line x1="495" y1="600" x2="495" y2="560" stroke="#4caf50" stroke-width="3" marker-end="url(#dataflow)"/>
+  <text x="590" y="590" text-anchor="middle" style="font-size: 10px; fill: #4caf50;">Response Data</text>
+  
+  <!-- Cache/Queue Flows -->
+  <line x1="920" y1="490" x2="920" y2="470" stroke="#ff5722" stroke-width="2"/>
+  <line x1="920" y1="470" x2="980" y2="470" stroke="#ff5722" stroke-width="2"/>
+  <line x1="980" y1="470" x2="980" y2="400" stroke="#ff5722" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="950" y="465" style="font-size: 9px; fill: #ff5722;">Cache/Queue</text>
+  
+  <!-- State Persistence -->
+  <line x1="780" y1="490" x2="780" y2="470" stroke="#607d8b" stroke-width="2"/>
+  <line x1="780" y1="470" x2="760" y2="470" stroke="#607d8b" stroke-width="2"/>
+  <line x1="760" y1="470" x2="760" y2="400" stroke="#607d8b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="770" y="440" style="font-size: 9px; fill: #607d8b;">State</text>
+  
+  <!-- Real-time Updates -->
+  <rect x="1200" y="250" width="150" height="80" rx="10" ry="10" fill="#fff9c4" stroke="#f9a825" stroke-width="2"/>
+  <text x="1275" y="275" text-anchor="middle" style="font-size: 12px; font-weight: bold;">Real-time Updates</text>
+  <text x="1275" y="295" text-anchor="middle" style="font-size: 10px;">WebSocket Events</text>
+  <text x="1275" y="315" text-anchor="middle" style="font-size: 10px;">Progress Tracking</text>
+  
+  <line x1="1200" y1="290" x2="1050" y2="290" stroke="#f9a825" stroke-width="2"/>
+  <line x1="1050" y1="290" x2="1050" y2="320" stroke="#f9a825" stroke-width="2"/>
+  <line x1="1050" y1="320" x2="400" y2="320" stroke="#f9a825" stroke-width="2"/>
+  <line x1="400" y1="320" x2="400" y2="200" stroke="#f9a825" stroke-width="2"/>
+  <line x1="400" y1="200" x2="200" y2="200" stroke="#f9a825" stroke-width="2"/>
+  <line x1="200" y1="200" x2="200" y2="140" stroke="#f9a825" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="600" y="335" text-anchor="middle" style="font-size: 9px; fill: #f9a825;">Live Progress Updates</text>
+  
+  <!-- Data Examples -->
+  <rect x="50" y="780" width="1300" height="80" fill="#f5f5f5" stroke="#ccc"/>
+  <text x="70" y="800" style="font-size: 12px; font-weight: bold;">Sample Data Flow:</text>
+  
+  <text x="70" y="820" style="font-size: 10px;">1. Input: {"selected_vendors": ["Cisco", "HP", "Dell"], "import_all": false}</text>
+  <text x="70" y="835" style="font-size: 10px;">2. Processing: Match vendors → Scan library → Check duplicates → Prepare API calls</text>
+  <text x="70" y="850" style="font-size: 10px;">3. Output: {success_count: 2, error_count: 1, imported_items: [...], errors: [...]}</text>
+  
+  <!-- Legend -->
+  <rect x="50" y="870" width="1300" height="25" fill="#e8f5e8" stroke="#4caf50"/>
+  <text x="70" y="885" style="font-size: 12px; font-weight: bold;">Legend:</text>
+  <line x1="120" y1="885" x2="160" y2="885" stroke="#1976d2" stroke-width="3" marker-end="url(#dataflow)"/>
+  <text x="170" y="887" style="font-size: 10px;">Primary Data Flow</text>
+  <line x1="270" y1="885" x2="310" y2="885" stroke="#4caf50" stroke-width="3" marker-end="url(#dataflow)"/>
+  <text x="320" y="887" style="font-size: 10px;">Response Flow</text>
+  <line x1="410" y1="885" x2="450" y2="885" stroke="#f9a825" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="460" y="887" style="font-size: 10px;">Real-time Updates</text>
+  <line x1="570" y1="885" x2="610" y2="885" stroke="#607d8b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="620" y="887" style="font-size: 10px;">State Persistence</text>
+  <line x1="730" y1="885" x2="770" y2="885" stroke="#ff5722" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="780" y="887" style="font-size: 10px;">Cache/Queue Operations</text>
+</svg>

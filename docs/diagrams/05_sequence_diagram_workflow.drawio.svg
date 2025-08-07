@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- saved from url=(0014)about:internet -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1400px" height="1100px" viewBox="-0.5 -0.5 1400 1100" style="background-color: rgb(255, 255, 255);" content="&lt;mxfile&gt;&lt;diagram&gt;&lt;mxGraphModel&gt;&lt;/mxGraphModel&gt;&lt;/diagram&gt;&lt;/mxfile&gt;">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+    <marker id="response" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4caf50"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="700" y="30" text-anchor="middle" style="font-size: 24px; font-weight: bold; font-family: Arial;">
+    Vendor Import Workflow - Sequence Diagram
+  </text>
+  
+  <!-- Actor Headers -->
+  <rect x="50" y="60" width="100" height="60" rx="10" ry="10" fill="#e3f2fd" stroke="#1976d2"/>
+  <text x="100" y="85" text-anchor="middle" style="font-size: 12px; font-weight: bold;">User</text>
+  <text x="100" y="105" text-anchor="middle" style="font-size: 10px;">Network Engineer</text>
+  
+  <rect x="200" y="60" width="120" height="60" rx="10" ry="10" fill="#fff3e0" stroke="#f57c00"/>
+  <text x="260" y="85" text-anchor="middle" style="font-size: 12px; font-weight: bold;">React UI</text>
+  <text x="260" y="105" text-anchor="middle" style="font-size: 10px;">Frontend</text>
+  
+  <rect x="370" y="60" width="120" height="60" rx="10" ry="10" fill="#e8f5e8" stroke="#388e3c"/>
+  <text x="430" y="85" text-anchor="middle" style="font-size: 12px; font-weight: bold;">FastAPI</text>
+  <text x="430" y="105" text-anchor="middle" style="font-size: 10px;">Gateway</text>
+  
+  <rect x="540" y="60" width="120" height="60" rx="10" ry="10" fill="#fff8e1" stroke="#ffa000"/>
+  <text x="600" y="85" text-anchor="middle" style="font-size: 12px; font-weight: bold;">Workflow</text>
+  <text x="600" y="105" text-anchor="middle" style="font-size: 10px;">Engine</text>
+  
+  <rect x="710" y="60" width="120" height="60" rx="10" ry="10" fill="#fce4ec" stroke="#c2185b"/>
+  <text x="770" y="85" text-anchor="middle" style="font-size: 12px; font-weight: bold;">Business</text>
+  <text x="770" y="105" text-anchor="middle" style="font-size: 10px;">Logic</text>
+  
+  <rect x="880" y="60" width="120" height="60" rx="10" ry="10" fill="#e1f5fe" stroke="#0277bd"/>
+  <text x="940" y="85" text-anchor="middle" style="font-size: 12px; font-weight: bold;">Database</text>
+  <text x="940" y="105" text-anchor="middle" style="font-size: 10px;">PostgreSQL</text>
+  
+  <rect x="1050" y="60" width="120" height="60" rx="10" ry="10" fill="#ffebee" stroke="#f44336"/>
+  <text x="1110" y="85" text-anchor="middle" style="font-size: 12px; font-weight: bold;">Redis</text>
+  <text x="1110" y="105" text-anchor="middle" style="font-size: 10px;">Cache/Queue</text>
+  
+  <rect x="1220" y="60" width="120" height="60" rx="10" ry="10" fill="#f3e5f5" stroke="#9c27b0"/>
+  <text x="1280" y="85" text-anchor="middle" style="font-size: 12px; font-weight: bold;">NetBox</text>
+  <text x="1280" y="105" text-anchor="middle" style="font-size: 10px;">API</text>
+  
+  <!-- Vertical Lifelines -->
+  <line x1="100" y1="120" x2="100" y2="1050" stroke="#ccc" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="260" y1="120" x2="260" y2="1050" stroke="#ccc" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="430" y1="120" x2="430" y2="1050" stroke="#ccc" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="600" y1="120" x2="600" y2="1050" stroke="#ccc" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="770" y1="120" x2="770" y2="1050" stroke="#ccc" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="940" y1="120" x2="940" y2="1050" stroke="#ccc" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="1110" y1="120" x2="1110" y2="1050" stroke="#ccc" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="1280" y1="120" x2="1280" y2="1050" stroke="#ccc" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Sequence Steps -->
+  <!-- 1. User Input -->
+  <rect x="20" y="150" width="20" height="20" rx="10" ry="10" fill="#1976d2" stroke="#0d47a1"/>
+  <text x="30" y="162" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">1</text>
+  <line x1="100" y1="160" x2="260" y2="160" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="180" y="150" text-anchor="middle" style="font-size: 10px;">Select Vendors & Submit</text>
+  <text x="180" y="175" text-anchor="middle" style="font-size: 9px;">["Cisco", "HP", "Dell"]</text>
+  
+  <!-- 2. Form Validation -->
+  <rect x="20" y="190" width="20" height="20" rx="10" ry="10" fill="#1976d2" stroke="#0d47a1"/>
+  <text x="30" y="202" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">2</text>
+  <line x1="260" y1="200" x2="430" y2="200" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="345" y="190" text-anchor="middle" style="font-size: 10px;">POST /api/workflows/task_import_vendors</text>
+  <text x="345" y="215" text-anchor="middle" style="font-size: 9px;">JSON payload with form data</text>
+  
+  <!-- 3. Create Process -->
+  <rect x="20" y="230" width="20" height="20" rx="10" ry="10" fill="#1976d2" stroke="#0d47a1"/>
+  <text x="30" y="242" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">3</text>
+  <line x1="430" y1="240" x2="600" y2="240" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="515" y="230" text-anchor="middle" style="font-size: 10px;">start_workflow()</text>
+  <text x="515" y="255" text-anchor="middle" style="font-size: 9px;">Create process instance</text>
+  
+  <!-- 4. Database Insert -->
+  <rect x="20" y="270" width="20" height="20" rx="10" ry="10" fill="#1976d2" stroke="#0d47a1"/>
+  <text x="30" y="282" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">4</text>
+  <line x1="600" y1="280" x2="940" y2="280" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="770" y="270" text-anchor="middle" style="font-size: 10px;">INSERT process</text>
+  <text x="770" y="295" text-anchor="middle" style="font-size: 9px;">Store form_data in state</text>
+  
+  <!-- 5. Queue Task -->
+  <rect x="20" y="310" width="20" height="20" rx="10" ry="10" fill="#1976d2" stroke="#0d47a1"/>
+  <text x="30" y="322" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">5</text>
+  <line x1="600" y1="320" x2="1110" y2="320" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="855" y="310" text-anchor="middle" style="font-size: 10px;">LPUSH workflow_queue</text>
+  <text x="855" y="335" text-anchor="middle" style="font-size: 9px;">Queue process for execution</text>
+  
+  <!-- 6. Return Process ID -->
+  <rect x="20" y="350" width="20" height="20" rx="10" ry="10" fill="#4caf50" stroke="#2e7d32"/>
+  <text x="30" y="362" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">6</text>
+  <line x1="430" y1="360" x2="260" y2="360" stroke="#4caf50" stroke-width="2" marker-end="url(#response)"/>
+  <text x="345" y="350" text-anchor="middle" style="font-size: 10px;">200 OK: Process ID</text>
+  <text x="345" y="375" text-anchor="middle" style="font-size: 9px;">{"id": "uuid", "status": "running"}</text>
+  
+  <!-- 7. UI Update -->
+  <rect x="20" y="390" width="20" height="20" rx="10" ry="10" fill="#4caf50" stroke="#2e7d32"/>
+  <text x="30" y="402" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">7</text>
+  <line x1="260" y1="400" x2="100" y2="400" stroke="#4caf50" stroke-width="2" marker-end="url(#response)"/>
+  <text x="180" y="390" text-anchor="middle" style="font-size: 10px;">Show Progress UI</text>
+  <text x="180" y="415" text-anchor="middle" style="font-size: 9px;">Display running status</text>
+  
+  <!-- Workflow Execution Phase -->
+  <rect x="50" y="440" width="1300" height="30" fill="#fff8e1" stroke="#ffa000" stroke-width="2"/>
+  <text x="700" y="460" text-anchor="middle" style="font-size: 14px; font-weight: bold;">Workflow Execution Phase</text>
+  
+  <!-- 8. Start Step 1 -->
+  <rect x="20" y="490" width="20" height="20" rx="10" ry="10" fill="#ff9800" stroke="#f57c00"/>
+  <text x="30" y="502" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">8</text>
+  <line x1="600" y1="500" x2="770" y2="500" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="685" y="490" text-anchor="middle" style="font-size: 10px;">analyze_vendors_for_import()</text>
+  <text x="685" y="515" text-anchor="middle" style="font-size: 9px;">Step 1 execution</text>
+  
+  <!-- 9. Get Form Data -->
+  <rect x="20" y="530" width="20" height="20" rx="10" ry="10" fill="#ff9800" stroke="#f57c00"/>
+  <text x="30" y="542" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">9</text>
+  <line x1="770" y1="540" x2="940" y2="540" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="855" y="530" text-anchor="middle" style="font-size: 10px;">SELECT form_data</text>
+  <text x="855" y="555" text-anchor="middle" style="font-size: 9px;">FROM process state</text>
+  
+  <!-- 10. Return Form Data -->
+  <rect x="20" y="570" width="20" height="20" rx="10" ry="10" fill="#4caf50" stroke="#2e7d32"/>
+  <text x="30" y="582" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">10</text>
+  <line x1="940" y1="580" x2="770" y2="580" stroke="#4caf50" stroke-width="2" marker-end="url(#response)"/>
+  <text x="855" y="570" text-anchor="middle" style="font-size: 10px;">selected_vendors list</text>
+  <text x="855" y="595" text-anchor="middle" style="font-size: 9px;">["Cisco", "HP", "Dell"]</text>
+  
+  <!-- 11. Scan Device Library -->
+  <rect x="20" y="610" width="20" height="20" rx="10" ry="10" fill="#ff9800" stroke="#f57c00"/>
+  <text x="30" y="622" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">11</text>
+  <rect x="750" y="620" width="40" height="20" fill="#ffeb3b" stroke="#f57c00"/>
+  <text x="770" y="632" text-anchor="middle" style="font-size: 10px;">Scan</text>
+  <text x="685" y="610" style="font-size: 10px;">Scan devicetype-library/</text>
+  <text x="685" y="645" style="font-size: 9px;">Match vendor directories</text>
+  
+  <!-- 12. Start Step 2 -->
+  <rect x="20" y="670" width="20" height="20" rx="10" ry="10" fill="#ff9800" stroke="#f57c00"/>
+  <text x="30" y="682" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">12</text>
+  <line x1="600" y1="680" x2="770" y2="680" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="685" y="670" text-anchor="middle" style="font-size: 10px;">import_vendors()</text>
+  <text x="685" y="695" text-anchor="middle" style="font-size: 9px;">Step 2 execution</text>
+  
+  <!-- 13-15. Process Each Vendor (Loop) -->
+  <rect x="50" y="720" width="1250" height="150" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2" rx="10" ry="10"/>
+  <text x="700" y="740" text-anchor="middle" style="font-size: 12px; font-weight: bold;">For Each Vendor: Cisco, HP, Dell</text>
+  
+  <!-- 13. Check if exists -->
+  <rect x="20" y="760" width="20" height="20" rx="10" ry="10" fill="#9c27b0" stroke="#7b1fa2"/>
+  <text x="30" y="772" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">13</text>
+  <line x1="770" y1="770" x2="1280" y2="770" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="1025" y="760" text-anchor="middle" style="font-size: 10px;">GET /api/dcim/manufacturers/?slug=cisco</text>
+  <text x="1025" y="785" text-anchor="middle" style="font-size: 9px;">Check if manufacturer exists</text>
+  
+  <!-- 14. Response -->
+  <rect x="20" y="800" width="20" height="20" rx="10" ry="10" fill="#4caf50" stroke="#2e7d32"/>
+  <text x="30" y="812" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">14</text>
+  <line x1="1280" y1="810" x2="770" y2="810" stroke="#4caf50" stroke-width="2" marker-end="url(#response)"/>
+  <text x="1025" y="800" text-anchor="middle" style="font-size: 10px;">404 Not Found or 200 OK</text>
+  <text x="1025" y="825" text-anchor="middle" style="font-size: 9px;">Manufacturer existence check</text>
+  
+  <!-- 15. Create if not exists -->
+  <rect x="20" y="840" width="20" height="20" rx="10" ry="10" fill="#9c27b0" stroke="#7b1fa2"/>
+  <text x="30" y="852" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">15</text>
+  <line x1="770" y1="850" x2="1280" y2="850" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="1025" y="840" text-anchor="middle" style="font-size: 10px;">POST /api/dcim/manufacturers/</text>
+  <text x="1025" y="865" text-anchor="middle" style="font-size: 9px;">Create manufacturer if not exists</text>
+  
+  <!-- 16. Update Results -->
+  <rect x="20" y="900" width="20" height="20" rx="10" ry="10" fill="#ff9800" stroke="#f57c00"/>
+  <text x="30" y="912" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">16</text>
+  <line x1="770" y1="910" x2="940" y2="910" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="855" y="900" text-anchor="middle" style="font-size: 10px;">UPDATE process</text>
+  <text x="855" y="925" text-anchor="middle" style="font-size: 9px;">Increment success/error counts</text>
+  
+  <!-- 17. Publish Progress -->
+  <rect x="20" y="940" width="20" height="20" rx="10" ry="10" fill="#ff9800" stroke="#f57c00"/>
+  <text x="30" y="952" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">17</text>
+  <line x1="770" y1="950" x2="1110" y2="950" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="940" y="940" text-anchor="middle" style="font-size: 10px;">PUBLISH progress_update</text>
+  <text x="940" y="965" text-anchor="middle" style="font-size: 9px;">Redis pub/sub for real-time UI</text>
+  
+  <!-- 18. WebSocket Update -->
+  <rect x="20" y="980" width="20" height="20" rx="10" ry="10" fill="#4caf50" stroke="#2e7d32"/>
+  <text x="30" y="992" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">18</text>
+  <line x1="1110" y1="990" x2="260" y2="990" stroke="#f9a825" stroke-width="3"/>
+  <line x1="260" y1="990" x2="100" y2="990" stroke="#f9a825" stroke-width="3" marker-end="url(#arrowhead)"/>
+  <text x="685" y="980" text-anchor="middle" style="font-size: 10px; fill: #f9a825;">WebSocket Progress Update</text>
+  <text x="685" y="1005" text-anchor="middle" style="font-size: 9px; fill: #f9a825;">Real-time progress to UI</text>
+  
+  <!-- Final Results -->
+  <rect x="50" y="1020" width="1300" height="30" fill="#e8f5e8" stroke="#4caf50" stroke-width="2"/>
+  <text x="700" y="1040" text-anchor="middle" style="font-size: 14px; font-weight: bold;">Final Results: 2 Success, 1 Error, Process Complete</text>
+  
+  <!-- Timing annotations -->
+  <text x="1350" y="200" style="font-size: 9px; fill: #666;">~100ms</text>
+  <text x="1350" y="400" style="font-size: 9px; fill: #666;">~500ms</text>
+  <text x="1350" y="680" style="font-size: 9px; fill: #666;">~2-10s</text>
+  <text x="1350" y="1000" style="font-size: 9px; fill: #666;">~5-30s</text>
+  
+  <!-- Legend -->
+  <rect x="50" y="1060" width="1300" height="35" fill="#f5f5f5" stroke="#ccc"/>
+  <text x="70" y="1075" style="font-size: 12px; font-weight: bold;">Legend:</text>
+  
+  <circle cx="140" cy="1077" r="8" fill="#1976d2" stroke="#0d47a1"/>
+  <text x="160" y="1080" style="font-size: 10px;">Request</text>
+  
+  <circle cx="210" cy="1077" r="8" fill="#4caf50" stroke="#2e7d32"/>
+  <text x="230" y="1080" style="font-size: 10px;">Response</text>
+  
+  <circle cx="290" cy="1077" r="8" fill="#ff9800" stroke="#f57c00"/>
+  <text x="310" y="1080" style="font-size: 10px;">Processing</text>
+  
+  <circle cx="390" cy="1077" r="8" fill="#9c27b0" stroke="#7b1fa2"/>
+  <text x="410" y="1080" style="font-size: 10px;">Loop/Iteration</text>
+  
+  <line x1="500" y1="1077" x2="540" y2="1077" stroke="#f9a825" stroke-width="3"/>
+  <text x="550" y="1080" style="font-size: 10px;">Real-time Update</text>
+  
+  <line x1="650" y1="1077" x2="690" y2="1077" stroke="#ccc" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="700" y="1080" style="font-size: 10px;">Lifeline</text>
+</svg>

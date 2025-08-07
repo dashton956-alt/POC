@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- saved from url=(0014)about:internet -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1600px" height="1200px" viewBox="-0.5 -0.5 1600 1200" style="background-color: rgb(255, 255, 255);" content="&lt;mxfile&gt;&lt;diagram&gt;&lt;mxGraphModel&gt;&lt;/mxGraphModel&gt;&lt;/diagram&gt;&lt;/mxfile&gt;">
+  <defs>
+    <!-- Card shadow effect -->
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#00000020"/>
+    </filter>
+  </defs>
+  
+  <!-- Title -->
+  <text x="800" y="30" text-anchor="middle" style="font-size: 26px; font-weight: bold; font-family: Arial;">
+    IaC Intent-Based Networking System - Product Roadmap Kanban
+  </text>
+  
+  <!-- Kanban Columns -->
+  <!-- Backlog Column -->
+  <rect x="50" y="80" width="300" height="1080" rx="15" ry="15" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="2"/>
+  <rect x="50" y="80" width="300" height="60" rx="15" ry="15" fill="#607d8b" stroke="#455a64"/>
+  <text x="200" y="115" text-anchor="middle" style="font-size: 18px; font-weight: bold; fill: white;">BACKLOG</text>
+  <text x="200" y="130" text-anchor="middle" style="font-size: 12px; fill: white;">Future Features</text>
+  
+  <!-- To Do Column -->
+  <rect x="380" y="80" width="300" height="1080" rx="15" ry="15" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="2"/>
+  <rect x="380" y="80" width="300" height="60" rx="15" ry="15" fill="#2196f3" stroke="#1976d2"/>
+  <text x="530" y="115" text-anchor="middle" style="font-size: 18px; font-weight: bold; fill: white;">TO DO</text>
+  <text x="530" y="130" text-anchor="middle" style="font-size: 12px; fill: white;">Ready to Start</text>
+  
+  <!-- In Progress Column -->
+  <rect x="710" y="80" width="300" height="1080" rx="15" ry="15" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="2"/>
+  <rect x="710" y="80" width="300" height="60" rx="15" ry="15" fill="#ff9800" stroke="#f57c00"/>
+  <text x="860" y="115" text-anchor="middle" style="font-size: 18px; font-weight: bold; fill: white;">IN PROGRESS</text>
+  <text x="860" y="130" text-anchor="middle" style="font-size: 12px; fill: white;">Currently Working</text>
+  
+  <!-- Testing Column -->
+  <rect x="1040" y="80" width="300" height="1080" rx="15" ry="15" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="2"/>
+  <rect x="1040" y="80" width="300" height="60" rx="15" ry="15" fill="#9c27b0" stroke="#7b1fa2"/>
+  <text x="1190" y="115" text-anchor="middle" style="font-size: 18px; font-weight: bold; fill: white;">TESTING</text>
+  <text x="1190" y="130" text-anchor="middle" style="font-size: 12px; fill: white;">QA & Validation</text>
+  
+  <!-- Done Column -->
+  <rect x="1370" y="80" width="200" height="1080" rx="15" ry="15" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="2"/>
+  <rect x="1370" y="80" width="200" height="60" rx="15" ry="15" fill="#4caf50" stroke="#388e3c"/>
+  <text x="1470" y="115" text-anchor="middle" style="font-size: 18px; font-weight: bold; fill: white;">DONE</text>
+  <text x="1470" y="130" text-anchor="middle" style="font-size: 12px; fill: white;">Completed</text>
+  
+  <!-- BACKLOG Cards -->
+  
+  <!-- AI/ML Features Card -->
+  <rect x="70" y="160" width="260" height="100" rx="8" ry="8" fill="#e8f5e8" stroke="#4caf50" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="70" y="160" width="260" height="25" rx="8" ry="8" fill="#4caf50" stroke="#388e3c"/>
+  <text x="200" y="177" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">AI/ML Intelligence Layer</text>
+  <text x="80" y="200" style="font-size: 10px;">• ML-based network optimization</text>
+  <text x="80" y="215" style="font-size: 10px;">• Predictive analytics for capacity</text>
+  <text x="80" y="230" style="font-size: 10px;">• Anomaly detection workflows</text>
+  <text x="80" y="245" style="font-size: 10px;">• Intent recognition from NLP</text>
+  
+  <!-- Advanced Integrations Card -->
+  <rect x="70" y="280" width="260" height="100" rx="8" ry="8" fill="#fff3e0" stroke="#ff9800" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="70" y="280" width="260" height="25" rx="8" ry="8" fill="#ff9800" stroke="#f57c00"/>
+  <text x="200" y="297" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Advanced Integrations</text>
+  <text x="80" y="320" style="font-size: 10px;">• Kubernetes integration</text>
+  <text x="80" y="335" style="font-size: 10px;">• Terraform provider</text>
+  <text x="80" y="350" style="font-size: 10px;">• CI/CD pipeline integration</text>
+  <text x="80" y="365" style="font-size: 10px;">• Slack/Teams notifications</text>
+  
+  <!-- Multi-tenancy Card -->
+  <rect x="70" y="400" width="260" height="100" rx="8" ry="8" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="70" y="400" width="260" height="25" rx="8" ry="8" fill="#9c27b0" stroke="#7b1fa2"/>
+  <text x="200" y="417" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Multi-tenancy & RBAC</text>
+  <text x="80" y="440" style="font-size: 10px;">• Organization-based isolation</text>
+  <text x="80" y="455" style="font-size: 10px;">• Fine-grained permissions</text>
+  <text x="80" y="470" style="font-size: 10px;">• Resource quotas and limits</text>
+  <text x="80" y="485" style="font-size: 10px;">• Audit logging per tenant</text>
+  
+  <!-- Workflow Templates Card -->
+  <rect x="70" y="520" width="260" height="100" rx="8" ry="8" fill="#e1f5fe" stroke="#0277bd" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="70" y="520" width="260" height="25" rx="8" ry="8" fill="#0277bd" stroke="#01579b"/>
+  <text x="200" y="537" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Workflow Templates</text>
+  <text x="80" y="560" style="font-size: 10px;">• Reusable workflow definitions</text>
+  <text x="80" y="575" style="font-size: 10px;">• Template marketplace</text>
+  <text x="80" y="590" style="font-size: 10px;">• Custom template builder UI</text>
+  <text x="80" y="605" style="font-size: 10px;">• Version control for templates</text>
+  
+  <!-- Mobile App Card -->
+  <rect x="70" y="640" width="260" height="100" rx="8" ry="8" fill="#fce4ec" stroke="#c2185b" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="70" y="640" width="260" height="25" rx="8" ry="8" fill="#c2185b" stroke="#ad1457"/>
+  <text x="200" y="657" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Mobile Application</text>
+  <text x="80" y="680" style="font-size: 10px;">• React Native mobile app</text>
+  <text x="80" y="695" style="font-size: 10px;">• Push notifications</text>
+  <text x="80" y="710" style="font-size: 10px;">• Offline workflow viewing</text>
+  <text x="80" y="725" style="font-size: 10px;">• QR code device scanning</text>
+  
+  <!-- API Gateway Card -->
+  <rect x="70" y="760" width="260" height="100" rx="8" ry="8" fill="#fff8e1" stroke="#ffa000" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="70" y="760" width="260" height="25" rx="8" ry="8" fill="#ffa000" stroke="#ff8f00"/>
+  <text x="200" y="777" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Enterprise API Gateway</text>
+  <text x="80" y="800" style="font-size: 10px;">• Rate limiting & throttling</text>
+  <text x="80" y="815" style="font-size: 10px;">• API versioning strategy</text>
+  <text x="80" y="830" style="font-size: 10px;">• Request/response transformation</text>
+  <text x="80" y="845" style="font-size: 10px;">• Analytics & monitoring</text>
+  
+  <!-- TO DO Cards -->
+  
+  <!-- Device Types Import Card -->
+  <rect x="400" y="160" width="260" height="100" rx="8" ry="8" fill="#e3f2fd" stroke="#1976d2" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="400" y="160" width="260" height="25" rx="8" ry="8" fill="#1976d2" stroke="#0d47a1"/>
+  <text x="530" y="177" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Device Types Import</text>
+  <text x="410" y="200" style="font-size: 10px;">• Import device types per vendor</text>
+  <text x="410" y="215" style="font-size: 10px;">• Batch processing capabilities</text>
+  <text x="410" y="230" style="font-size: 10px;">• Conflict resolution handling</text>
+  <text x="410" y="245" style="font-size: 10px;">• Progress tracking & rollback</text>
+  
+  <!-- Authentication System Card -->
+  <rect x="400" y="280" width="260" height="100" rx="8" ry="8" fill="#ffebee" stroke="#f44336" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="400" y="280" width="260" height="25" rx="8" ry="8" fill="#f44336" stroke="#d32f2f"/>
+  <text x="530" y="297" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Authentication & Security</text>
+  <text x="410" y="320" style="font-size: 10px;">• JWT token authentication</text>
+  <text x="410" y="335" style="font-size: 10px;">• LDAP/SAML integration</text>
+  <text x="410" y="350" style="font-size: 10px;">• Role-based access control</text>
+  <text x="410" y="365" style="font-size: 10px;">• Session management</text>
+  
+  <!-- Ansible Integration Card -->
+  <rect x="400" y="400" width="260" height="100" rx="8" ry="8" fill="#e8f5e8" stroke="#4caf50" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="400" y="400" width="260" height="25" rx="8" ry="8" fill="#4caf50" stroke="#388e3c"/>
+  <text x="530" y="417" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Ansible Integration</text>
+  <text x="410" y="440" style="font-size: 10px;">• Configuration management</text>
+  <text x="410" y="455" style="font-size: 10px;">• Playbook execution workflows</text>
+  <text x="410" y="470" style="font-size: 10px;">• Inventory synchronization</text>
+  <text x="410" y="485" style="font-size: 10px;">• Template-based automation</text>
+  
+  <!-- Git Integration Card -->
+  <rect x="400" y="520" width="260" height="100" rx="8" ry="8" fill="#fff3e0" stroke="#ff9800" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="400" y="520" width="260" height="25" rx="8" ry="8" fill="#ff9800" stroke="#f57c00"/>
+  <text x="530" y="537" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Git Integration</text>
+  <text x="410" y="560" style="font-size: 10px;">• Configuration version control</text>
+  <text x="410" y="575" style="font-size: 10px;">• GitOps workflow patterns</text>
+  <text x="410" y="590" style="font-size: 10px;">• Automated synchronization</text>
+  <text x="410" y="605" style="font-size: 10px;">• Branch-based environments</text>
+  
+  <!-- Workflow Scheduler Card -->
+  <rect x="400" y="640" width="260" height="100" rx="8" ry="8" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="400" y="640" width="260" height="25" rx="8" ry="8" fill="#9c27b0" stroke="#7b1fa2"/>
+  <text x="530" y="657" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Workflow Scheduler</text>
+  <text x="410" y="680" style="font-size: 10px;">• Cron-based scheduling</text>
+  <text x="410" y="695" style="font-size: 10px;">• Event-driven triggers</text>
+  <text x="410" y="710" style="font-size: 10px;">• Workflow dependencies</text>
+  <text x="410" y="725" style="font-size: 10px;">• Resource-aware scheduling</text>
+  
+  <!-- Monitoring Dashboard Card -->
+  <rect x="400" y="760" width="260" height="100" rx="8" ry="8" fill="#e1f5fe" stroke="#0277bd" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="400" y="760" width="260" height="25" rx="8" ry="8" fill="#0277bd" stroke="#01579b"/>
+  <text x="530" y="777" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Advanced Monitoring</text>
+  <text x="410" y="800" style="font-size: 10px;">• Prometheus metrics</text>
+  <text x="410" y="815" style="font-size: 10px;">• Grafana dashboards</text>
+  <text x="410" y="830" style="font-size: 10px;">• Alerting & notifications</text>
+  <text x="410" y="845" style="font-size: 10px;">• Performance analytics</text>
+  
+  <!-- IN PROGRESS Cards -->
+  
+  <!-- Documentation Card -->
+  <rect x="730" y="160" width="260" height="100" rx="8" ry="8" fill="#e8f5e8" stroke="#4caf50" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="730" y="160" width="260" height="25" rx="8" ry="8" fill="#4caf50" stroke="#388e3c"/>
+  <text x="860" y="177" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">✓ Documentation Suite</text>
+  <text x="740" y="200" style="font-size: 10px;">• High-level design complete</text>
+  <text x="740" y="215" style="font-size: 10px;">• Low-level design complete</text>
+  <text x="740" y="230" style="font-size: 10px;">• Architecture diagrams done</text>
+  <text x="740" y="245" style="font-size: 10px;">• Kanban roadmap in progress</text>
+  
+  <!-- API Documentation Card -->
+  <rect x="730" y="280" width="260" height="80" rx="8" ry="8" fill="#fff3e0" stroke="#ff9800" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="730" y="280" width="260" height="25" rx="8" ry="8" fill="#ff9800" stroke="#f57c00"/>
+  <text x="860" y="297" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">API Documentation</text>
+  <text x="740" y="320" style="font-size: 10px;">• OpenAPI/Swagger specs</text>
+  <text x="740" y="335" style="font-size: 10px;">• Interactive API explorer</text>
+  <text x="740" y="350" style="font-size: 10px;">• Code examples & SDKs</text>
+  
+  <!-- TESTING Cards -->
+  
+  <!-- Unit Testing Card -->
+  <rect x="1060" y="160" width="260" height="100" rx="8" ry="8" fill="#e3f2fd" stroke="#1976d2" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="1060" y="160" width="260" height="25" rx="8" ry="8" fill="#1976d2" stroke="#0d47a1"/>
+  <text x="1190" y="177" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Testing Framework</text>
+  <text x="1070" y="200" style="font-size: 10px;">• Unit tests with pytest</text>
+  <text x="1070" y="215" style="font-size: 10px;">• Integration test suite</text>
+  <text x="1070" y="230" style="font-size: 10px;">• API endpoint testing</text>
+  <text x="1070" y="245" style="font-size: 10px;">• Workflow execution tests</text>
+  
+  <!-- Performance Testing Card -->
+  <rect x="1060" y="280" width="260" height="100" rx="8" ry="8" fill="#ffebee" stroke="#f44336" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="1060" y="280" width="260" height="25" rx="8" ry="8" fill="#f44336" stroke="#d32f2f"/>
+  <text x="1190" y="297" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Performance Testing</text>
+  <text x="1070" y="320" style="font-size: 10px;">• Load testing with Locust</text>
+  <text x="1070" y="335" style="font-size: 10px;">• Stress testing scenarios</text>
+  <text x="1070" y="350" style="font-size: 10px;">• Database performance</text>
+  <text x="1070" y="365" style="font-size: 10px;">• NetBox API rate limits</text>
+  
+  <!-- DONE Cards -->
+  
+  <!-- Core Workflows Card -->
+  <rect x="1390" y="160" width="160" height="120" rx="8" ry="8" fill="#e8f5e8" stroke="#4caf50" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="1390" y="160" width="160" height="25" rx="8" ry="8" fill="#4caf50" stroke="#388e3c"/>
+  <text x="1470" y="177" text-anchor="middle" style="font-size: 11px; font-weight: bold; fill: white;">✓ Vendor Import</text>
+  <text x="1400" y="200" style="font-size: 9px;">• Multi-vendor selection</text>
+  <text x="1400" y="215" style="font-size: 9px;">• NetBox integration</text>
+  <text x="1400" y="230" style="font-size: 9px;">• Real-time progress</text>
+  <text x="1400" y="245" style="font-size: 9px;">• Error handling</text>
+  <text x="1400" y="260" style="font-size: 9px;">• State management</text>
+  
+  <!-- Basic UI Card -->
+  <rect x="1390" y="300" width="160" height="100" rx="8" ry="8" fill="#e3f2fd" stroke="#1976d2" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="1390" y="300" width="160" height="25" rx="8" ry="8" fill="#1976d2" stroke="#0d47a1"/>
+  <text x="1470" y="317" text-anchor="middle" style="font-size: 11px; font-weight: bold; fill: white;">✓ React UI</text>
+  <text x="1400" y="340" style="font-size: 9px;">• Workflow forms</text>
+  <text x="1400" y="355" style="font-size: 9px;">• Process monitoring</text>
+  <text x="1400" y="370" style="font-size: 9px;">• WebSocket updates</text>
+  <text x="1400" y="385" style="font-size: 9px;">• Material-UI design</text>
+  
+  <!-- Infrastructure Card -->
+  <rect x="1390" y="420" width="160" height="100" rx="8" ry="8" fill="#fff3e0" stroke="#ff9800" stroke-width="2" filter="url(#cardShadow)"/>
+  <rect x="1390" y="420" width="160" height="25" rx="8" ry="8" fill="#ff9800" stroke="#f57c00"/>
+  <text x="1470" y="437" text-anchor="middle" style="font-size: 11px; font-weight: bold; fill: white;">✓ Infrastructure</text>
+  <text x="1400" y="460" style="font-size: 9px;">• Docker containers</text>
+  <text x="1400" y="475" style="font-size: 9px;">• PostgreSQL DB</text>
+  <text x="1400" y="490" style="font-size: 9px;">• Redis cache</text>
+  <text x="1400" y="505" style="font-size: 9px;">• Docker Compose</text>
+  
+  <!-- Priority Labels -->
+  
+  <!-- High Priority -->
+  <rect x="70" y="900" width="80" height="25" rx="12" ry="12" fill="#f44336" stroke="#d32f2f"/>
+  <text x="110" y="917" text-anchor="middle" style="font-size: 11px; font-weight: bold; fill: white;">HIGH</text>
+  
+  <rect x="400" y="900" width="80" height="25" rx="12" ry="12" fill="#f44336" stroke="#d32f2f"/>
+  <text x="440" y="917" text-anchor="middle" style="font-size: 11px; font-weight: bold; fill: white;">HIGH</text>
+  
+  <!-- Medium Priority -->
+  <rect x="170" y="900" width="80" height="25" rx="12" ry="12" fill="#ff9800" stroke="#f57c00"/>
+  <text x="210" y="917" text-anchor="middle" style="font-size: 11px; font-weight: bold; fill: white;">MEDIUM</text>
+  
+  <rect x="500" y="900" width="80" height="25" rx="12" ry="12" fill="#ff9800" stroke="#f57c00"/>
+  <text x="540" y="917" text-anchor="middle" style="font-size: 11px; font-weight: bold; fill: white;">MEDIUM</text>
+  
+  <!-- Low Priority -->
+  <rect x="270" y="900" width="60" height="25" rx="12" ry="12" fill="#4caf50" stroke="#388e3c"/>
+  <text x="300" y="917" text-anchor="middle" style="font-size: 11px; font-weight: bold; fill: white;">LOW</text>
+  
+  <!-- Story Points -->
+  <circle cx="320" cy="170" r="15" fill="#607d8b" stroke="#455a64"/>
+  <text x="320" y="175" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">13</text>
+  
+  <circle cx="320" cy="290" r="15" fill="#607d8b" stroke="#455a64"/>
+  <text x="320" y="295" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">8</text>
+  
+  <circle cx="650" cy="170" r="15" fill="#607d8b" stroke="#455a64"/>
+  <text x="650" y="175" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">5</text>
+  
+  <circle cx="650" cy="290" r="15" fill="#607d8b" stroke="#455a64"/>
+  <text x="650" y="295" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">8</text>
+  
+  <circle cx="980" cy="170" r="15" fill="#607d8b" stroke="#455a64"/>
+  <text x="980" y="175" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">3</text>
+  
+  <!-- Sprint Information -->
+  <rect x="50" y="950" width="1520" height="100" rx="10" ry="10" fill="#f8f9fa" stroke="#dee2e6"/>
+  <text x="70" y="975" style="font-size: 16px; font-weight: bold;">Sprint Planning Overview</text>
+  
+  <text x="70" y="1000" style="font-size: 12px; font-weight: bold;">Current Sprint (August 2025):</text>
+  <text x="250" y="1000" style="font-size: 12px;">Documentation Suite, API Documentation</text>
+  
+  <text x="70" y="1020" style="font-size: 12px; font-weight: bold;">Next Sprint (September 2025):</text>
+  <text x="250" y="1020" style="font-size: 12px;">Device Types Import, Authentication System</text>
+  
+  <text x="70" y="1040" style="font-size: 12px; font-weight: bold;">Q4 2025 Goals:</text>
+  <text x="200" y="1040" style="font-size: 12px;">Ansible Integration, Git Integration, Workflow Scheduler, Advanced Monitoring</text>
+  
+  <!-- Team Assignments -->
+  <rect x="800" y="950" width="770" height="100" rx="10" ry="10" fill="#e3f2fd" stroke="#1976d2"/>
+  <text x="820" y="975" style="font-size: 16px; font-weight: bold;">Team Assignments</text>
+  
+  <text x="820" y="1000" style="font-size: 12px; font-weight: bold;">Backend Team:</text>
+  <text x="920" y="1000" style="font-size: 12px;">Authentication, Ansible/Git Integration, Performance</text>
+  
+  <text x="820" y="1020" style="font-size: 12px; font-weight: bold;">Frontend Team:</text>
+  <text x="920" y="1020" style="font-size: 12px;">UI/UX Improvements, Mobile App, Advanced Dashboards</text>
+  
+  <text x="820" y="1040" style="font-size: 12px; font-weight: bold;">DevOps Team:</text>
+  <text x="920" y="1040" style="font-size: 12px;">CI/CD, Monitoring, Infrastructure Scaling</text>
+  
+  <!-- Milestone Markers -->
+  <rect x="1200" y="950" width="350" height="100" rx="10" ry="10" fill="#fff3e0" stroke="#ff9800"/>
+  <text x="1220" y="975" style="font-size: 16px; font-weight: bold;">Key Milestones</text>
+  
+  <text x="1220" y="1000" style="font-size: 12px; font-weight: bold;">MVP Release (Q4 2025):</text>
+  <text x="1220" y="1015" style="font-size: 11px;">Device Types, Auth, Basic Ansible</text>
+  
+  <text x="1220" y="1035" style="font-size: 12px; font-weight: bold;">Enterprise Ready (Q1 2026):</text>
+  <text x="1220" y="1050" style="font-size: 11px;">Multi-tenancy, Advanced Security</text>
+  
+  <!-- Legend -->
+  <rect x="50" y="1070" width="1520" height="90" fill="#e8f5e8" stroke="#4caf50"/>
+  <text x="70" y="1090" style="font-size: 14px; font-weight: bold;">Kanban Board Legend</text>
+  
+  <rect x="80" y="1100" width="15" height="15" fill="#f44336"/>
+  <text x="105" y="1112" style="font-size: 10px;">High Priority (Critical for MVP)</text>
+  
+  <rect x="250" y="1100" width="15" height="15" fill="#ff9800"/>
+  <text x="275" y="1112" style="font-size: 10px;">Medium Priority (Important)</text>
+  
+  <rect x="400" y="1100" width="15" height="15" fill="#4caf50"/>
+  <text x="425" y="1112" style="font-size: 10px;">Low Priority (Nice to Have)</text>
+  
+  <circle cx="560" cy="1107" r="8" fill="#607d8b"/>
+  <text x="580" y="1112" style="font-size: 10px;">Story Points (Effort Estimate)</text>
+  
+  <text x="80" y="1135" style="font-size: 12px; font-weight: bold;">Definition of Done:</text>
+  <text x="220" y="1135" style="font-size: 11px;">✓ Code Complete ✓ Tests Pass ✓ Documentation Updated ✓ Code Review ✓ Deployment Ready</text>
+  
+  <text x="80" y="1150" style="font-size: 12px; font-weight: bold;">Sprint Velocity:</text>
+  <text x="180" y="1150" style="font-size: 11px;">Target 25-30 story points per 2-week sprint | Current team capacity: 3 developers</text>
+</svg>

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- saved from url=(0014)about:internet -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200px" height="1000px" viewBox="-0.5 -0.5 1200 1000" style="background-color: rgb(255, 255, 255);" content="&lt;mxfile&gt;&lt;diagram&gt;&lt;mxGraphModel&gt;&lt;/mxGraphModel&gt;&lt;/diagram&gt;&lt;/mxfile&gt;">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+    <marker id="decision" markerWidth="12" markerHeight="12" refX="6" refY="6" orient="auto">
+      <rect x="2" y="2" width="8" height="8" fill="#ffeb3b" stroke="#f57c00" transform="rotate(45 6 6)"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="600" y="30" text-anchor="middle" style="font-size: 24px; font-weight: bold; font-family: Arial;">
+    Vendor Import Workflow - Current Implementation
+  </text>
+  
+  <!-- Start -->
+  <ellipse cx="100" cy="80" rx="60" ry="30" fill="#4caf50" stroke="#2e7d32"/>
+  <text x="100" y="88" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Start</text>
+  
+  <!-- User Form Input -->
+  <rect x="200" y="50" width="160" height="60" rx="10" ry="10" fill="#2196f3" stroke="#1976d2"/>
+  <text x="280" y="75" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">User Form Input</text>
+  <text x="280" y="95" text-anchor="middle" style="font-size: 10px; fill: white;">Select Vendors</text>
+  
+  <!-- Form Validation -->
+  <rect x="420" y="50" width="160" height="60" rx="10" ry="10" fill="#ff9800" stroke="#f57c00"/>
+  <text x="500" y="75" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Form Validation</text>
+  <text x="500" y="95" text-anchor="middle" style="font-size: 10px; fill: white;">Pydantic Validation</text>
+  
+  <!-- Create Process -->
+  <rect x="640" y="50" width="160" height="60" rx="10" ry="10" fill="#9c27b0" stroke="#7b1fa2"/>
+  <text x="720" y="75" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Create Process</text>
+  <text x="720" y="95" text-anchor="middle" style="font-size: 10px; fill: white;">DB Record</text>
+  
+  <!-- Initialize State -->
+  <rect x="860" y="50" width="160" height="60" rx="10" ry="10" fill="#607d8b" stroke="#455a64"/>
+  <text x="940" y="75" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Initialize State</text>
+  <text x="940" y="95" text-anchor="middle" style="font-size: 10px; fill: white;">Workflow State</text>
+  
+  <!-- Analyze Vendors Step -->
+  <rect x="200" y="180" width="800" height="80" rx="15" ry="15" fill="#e1f5fe" stroke="#0277bd" stroke-width="3"/>
+  <text x="600" y="205" text-anchor="middle" style="font-size: 16px; font-weight: bold;">Step 1: analyze_vendors_for_import</text>
+  
+  <!-- Get Form Data -->
+  <rect x="230" y="220" width="140" height="50" rx="5" ry="5" fill="#ffffff" stroke="#0277bd"/>
+  <text x="300" y="240" text-anchor="middle" style="font-size: 11px;">Get Form Data</text>
+  <text x="300" y="255" text-anchor="middle" style="font-size: 9px;">from state</text>
+  
+  <!-- Parse Vendors -->
+  <rect x="390" y="220" width="140" height="50" rx="5" ry="5" fill="#ffffff" stroke="#0277bd"/>
+  <text x="460" y="240" text-anchor="middle" style="font-size: 11px;">Parse Vendors</text>
+  <text x="460" y="255" text-anchor="middle" style="font-size: 9px;">selected_vendors</text>
+  
+  <!-- Decision: All Vendors? -->
+  <polygon points="600,220 640,245 600,270 560,245" fill="#ffeb3b" stroke="#f57c00"/>
+  <text x="600" y="250" text-anchor="middle" style="font-size: 10px;">"all"?</text>
+  
+  <!-- Scan Library -->
+  <rect x="700" y="220" width="140" height="50" rx="5" ry="5" fill="#ffffff" stroke="#0277bd"/>
+  <text x="770" y="240" text-anchor="middle" style="font-size: 11px;">Scan Library</text>
+  <text x="770" y="255" text-anchor="middle" style="font-size: 9px;">or filter vendors</text>
+  
+  <!-- Validate Vendors -->
+  <rect x="860" y="220" width="120" height="50" rx="5" ry="5" fill="#ffffff" stroke="#0277bd"/>
+  <text x="920" y="240" text-anchor="middle" style="font-size: 11px;">Validate</text>
+  <text x="920" y="255" text-anchor="middle" style="font-size: 9px;">Vendors Exist</text>
+  
+  <!-- Import Vendors Step -->
+  <rect x="200" y="320" width="800" height="80" rx="15" ry="15" fill="#e8f5e8" stroke="#388e3c" stroke-width="3"/>
+  <text x="600" y="345" text-anchor="middle" style="font-size: 16px; font-weight: bold;">Step 2: import_vendors</text>
+  
+  <!-- Process Each Vendor -->
+  <rect x="230" y="360" width="140" height="50" rx="5" ry="5" fill="#ffffff" stroke="#388e3c"/>
+  <text x="300" y="380" text-anchor="middle" style="font-size: 11px;">Process Each</text>
+  <text x="300" y="395" text-anchor="middle" style="font-size: 9px;">Vendor</text>
+  
+  <!-- Check Exists -->
+  <polygon points="460,360 500,385 460,410 420,385" fill="#ffeb3b" stroke="#f57c00"/>
+  <text x="460" y="385" text-anchor="middle" style="font-size: 9px;">Exists?</text>
+  
+  <!-- Create Manufacturer -->
+  <rect x="540" y="360" width="140" height="50" rx="5" ry="5" fill="#ffffff" stroke="#388e3c"/>
+  <text x="610" y="380" text-anchor="middle" style="font-size: 11px;">Create</text>
+  <text x="610" y="395" text-anchor="middle" style="font-size: 9px;">Manufacturer</text>
+  
+  <!-- NetBox API Call -->
+  <rect x="700" y="360" width="140" height="50" rx="5" ry="5" fill="#ffffff" stroke="#388e3c"/>
+  <text x="770" y="380" text-anchor="middle" style="font-size: 11px;">NetBox API</text>
+  <text x="770" y="395" text-anchor="middle" style="font-size: 9px;">POST Request</text>
+  
+  <!-- Update Results -->
+  <rect x="860" y="360" width="120" height="50" rx="5" ry="5" fill="#ffffff" stroke="#388e3c"/>
+  <text x="920" y="380" text-anchor="middle" style="font-size: 11px;">Update</text>
+  <text x="920" y="395" text-anchor="middle" style="font-size: 9px;">Results</text>
+  
+  <!-- Success/Error Handling -->
+  <rect x="200" y="460" width="380" height="80" rx="10" ry="10" fill="#e8f5e8" stroke="#4caf50" stroke-width="2"/>
+  <text x="390" y="485" text-anchor="middle" style="font-size: 14px; font-weight: bold;">Success Path</text>
+  
+  <rect x="240" y="505" width="120" height="45" rx="5" ry="5" fill="#ffffff" stroke="#4caf50"/>
+  <text x="300" y="522" text-anchor="middle" style="font-size: 10px;">Log Success</text>
+  <text x="300" y="535" text-anchor="middle" style="font-size: 9px;">Increment Count</text>
+  
+  <rect x="380" y="505" width="120" height="45" rx="5" ry="5" fill="#ffffff" stroke="#4caf50"/>
+  <text x="440" y="522" text-anchor="middle" style="font-size: 10px;">Store Results</text>
+  <text x="440" y="535" text-anchor="middle" style="font-size: 9px;">in State</text>
+  
+  <rect x="620" y="460" width="380" height="80" rx="10" ry="10" fill="#ffebee" stroke="#f44336" stroke-width="2"/>
+  <text x="810" y="485" text-anchor="middle" style="font-size: 14px; font-weight: bold;">Error Path</text>
+  
+  <rect x="660" y="505" width="120" height="45" rx="5" ry="5" fill="#ffffff" stroke="#f44336"/>
+  <text x="720" y="522" text-anchor="middle" style="font-size: 10px;">Log Error</text>
+  <text x="720" y="535" text-anchor="middle" style="font-size: 9px;">Capture Details</text>
+  
+  <rect x="800" y="505" width="120" height="45" rx="5" ry="5" fill="#ffffff" stroke="#f44336"/>
+  <text x="860" y="522" text-anchor="middle" style="font-size: 10px;">Continue</text>
+  <text x="860" y="535" text-anchor="middle" style="font-size: 9px;">Processing</text>
+  
+  <!-- Finalize Results -->
+  <rect x="400" y="580" width="400" height="60" rx="10" ry="10" fill="#fff3e0" stroke="#ff9800"/>
+  <text x="600" y="605" text-anchor="middle" style="font-size: 14px; font-weight: bold;">Finalize Results</text>
+  <text x="600" y="625" text-anchor="middle" style="font-size: 12px;">Aggregate Success/Error Counts</text>
+  
+  <!-- Update Process Status -->
+  <rect x="200" y="680" width="160" height="60" rx="10" ry="10" fill="#9c27b0" stroke="#7b1fa2"/>
+  <text x="280" y="705" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Update Process</text>
+  <text x="280" y="725" text-anchor="middle" style="font-size: 10px; fill: white;">Status: Completed</text>
+  
+  <!-- Publish Events -->
+  <rect x="420" y="680" width="160" height="60" rx="10" ry="10" fill="#607d8b" stroke="#455a64"/>
+  <text x="500" y="705" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Publish Events</text>
+  <text x="500" y="725" text-anchor="middle" style="font-size: 10px; fill: white;">Redis Pub/Sub</text>
+  
+  <!-- Notify UI -->
+  <rect x="640" y="680" width="160" height="60" rx="10" ry="10" fill="#ff5722" stroke="#d84315"/>
+  <text x="720" y="705" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Notify UI</text>
+  <text x="720" y="725" text-anchor="middle" style="font-size: 10px; fill: white;">WebSocket</text>
+  
+  <!-- Return Response -->
+  <rect x="860" y="680" width="160" height="60" rx="10" ry="10" fill="#795548" stroke="#5d4037"/>
+  <text x="940" y="705" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">Return Response</text>
+  <text x="940" y="725" text-anchor="middle" style="font-size: 10px; fill: white;">Final Results</text>
+  
+  <!-- End -->
+  <ellipse cx="600" cy="810" rx="60" ry="30" fill="#f44336" stroke="#d32f2f"/>
+  <text x="600" y="818" text-anchor="middle" style="font-size: 12px; font-weight: bold; fill: white;">End</text>
+  
+  <!-- Main Flow Arrows -->
+  <line x1="160" y1="80" x2="200" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="360" y1="80" x2="420" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="580" y1="80" x2="640" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="800" y1="80" x2="860" y2="80" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- To Step 1 -->
+  <line x1="940" y1="110" x2="940" y2="140" stroke="#333" stroke-width="2"/>
+  <line x1="940" y1="140" x2="600" y2="140" stroke="#333" stroke-width="2"/>
+  <line x1="600" y1="140" x2="600" y2="180" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Step 1 Internal Flow -->
+  <line x1="370" y1="245" x2="390" y2="245" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="530" y1="245" x2="560" y2="245" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="640" y1="245" x2="700" y2="245" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="840" y1="245" x2="860" y2="245" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Step 1 to Step 2 -->
+  <line x1="600" y1="260" x2="600" y2="320" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Step 2 Internal Flow -->
+  <line x1="370" y1="385" x2="420" y2="385" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="500" y1="385" x2="540" y2="385" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="680" y1="385" x2="700" y2="385" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="840" y1="385" x2="860" y2="385" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Success/Error Paths -->
+  <line x1="610" y1="410" x2="390" y2="460" stroke="#4caf50" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="500" y="440" style="font-size: 10px; fill: #4caf50;">Success</text>
+  
+  <line x1="770" y1="410" x2="810" y2="460" stroke="#f44336" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="790" y="440" style="font-size: 10px; fill: #f44336;">Error</text>
+  
+  <!-- To Finalize -->
+  <line x1="390" y1="540" x2="600" y2="580" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="810" y1="540" x2="600" y2="580" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- To Final Steps -->
+  <line x1="600" y1="640" x2="600" y2="660" stroke="#333" stroke-width="2"/>
+  <line x1="600" y1="660" x2="280" y2="660" stroke="#333" stroke-width="2"/>
+  <line x1="280" y1="660" x2="280" y2="680" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <line x1="280" y1="740" x2="500" y2="740" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="500" y1="740" x2="720" y2="740" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="720" y1="740" x2="940" y2="740" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- To End -->
+  <line x1="600" y1="760" x2="600" y2="780" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Decision Labels -->
+  <text x="650" y="235" style="font-size: 9px;">Yes</text>
+  <text x="550" y="235" style="font-size: 9px;">No</text>
+  <text x="480" y="375" style="font-size: 9px;">No</text>
+  <text x="440" y="375" style="font-size: 9px;">Yes</text>
+  
+  <!-- Skip path for existing manufacturers -->
+  <line x1="460" y1="410" x2="460" y2="440" stroke="#ffa726" stroke-width="2"/>
+  <line x1="460" y1="440" x2="920" y2="440" stroke="#ffa726" stroke-width="2"/>
+  <line x1="920" y1="440" x2="920" y2="410" stroke="#ffa726" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="690" y="455" style="font-size: 9px; fill: #ffa726;">Skip existing</text>
+  
+  <!-- Data Flow Indicators -->
+  <text x="120" y="200" style="font-size: 12px; font-weight: bold; text-decoration: underline;">Data Flow:</text>
+  <text x="120" y="220" style="font-size: 10px;">• Form data stored in workflow state</text>
+  <text x="120" y="240" style="font-size: 10px;">• Vendor list: ["Cisco", "HP"] or ["all"]</text>
+  <text x="120" y="260" style="font-size: 10px;">• Case-insensitive vendor matching</text>
+  <text x="120" y="280" style="font-size: 10px;">• Real-time progress updates via WebSocket</text>
+  <text x="120" y="300" style="font-size: 10px;">• Success/error counts tracked per vendor</text>
+  
+  <!-- Performance Notes -->
+  <rect x="1050" y="180" width="140" height="140" rx="5" ry="5" fill="#fff9c4" stroke="#f9a825"/>
+  <text x="1120" y="200" text-anchor="middle" style="font-size: 12px; font-weight: bold;">Performance</text>
+  <text x="1070" y="220" style="font-size: 9px;">• Async processing</text>
+  <text x="1070" y="235" style="font-size: 9px;">• Error resilience</text>
+  <text x="1070" y="250" style="font-size: 9px;">• Progress tracking</text>
+  <text x="1070" y="265" style="font-size: 9px;">• Batch operations</text>
+  <text x="1070" y="280" style="font-size: 9px;">• Connection pooling</text>
+  <text x="1070" y="295" style="font-size: 9px;">• Structured logging</text>
+  
+  <!-- Error Handling -->
+  <rect x="1050" y="340" width="140" height="120" rx="5" ry="5" fill="#ffcdd2" stroke="#e57373"/>
+  <text x="1120" y="360" text-anchor="middle" style="font-size: 12px; font-weight: bold;">Error Handling</text>
+  <text x="1070" y="380" style="font-size: 9px;">• Non-blocking errors</text>
+  <text x="1070" y="395" style="font-size: 9px;">• Detailed logging</text>
+  <text x="1070" y="410" style="font-size: 9px;">• Partial success</text>
+  <text x="1070" y="425" style="font-size: 9px;">• User feedback</text>
+  <text x="1070" y="440" style="font-size: 9px;">• Audit trail</text>
+  
+  <!-- Legend -->
+  <rect x="50" y="920" width="1100" height="60" fill="#f5f5f5" stroke="#ccc"/>
+  <text x="70" y="940" style="font-size: 12px; font-weight: bold;">Legend:</text>
+  <ellipse cx="130" cy="940" rx="12" ry="8" fill="#4caf50" stroke="#2e7d32"/>
+  <text x="155" y="945" style="font-size: 10px;">Start/End</text>
+  <rect x="200" y="930" width="20" height="15" rx="3" ry="3" fill="#2196f3" stroke="#1976d2"/>
+  <text x="230" y="942" style="font-size: 10px;">Process</text>
+  <polygon points="280,930 295,940 280,950 265,940" fill="#ffeb3b" stroke="#f57c00"/>
+  <text x="305" y="942" style="font-size: 10px;">Decision</text>
+  <rect x="370" y="930" width="20" height="15" rx="3" ry="3" fill="#e1f5fe" stroke="#0277bd"/>
+  <text x="400" y="942" style="font-size: 10px;">Workflow Step</text>
+  <line x1="480" y1="940" x2="520" y2="940" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="530" y="942" style="font-size: 10px;">Flow Direction</text>
+  <line x1="620" y1="940" x2="660" y2="940" stroke="#4caf50" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="670" y="942" style="font-size: 10px;">Success Path</text>
+  <line x1="760" y1="940" x2="800" y2="940" stroke="#f44336" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="810" y="942" style="font-size: 10px;">Error Path</text>
+  <line x1="880" y1="940" x2="920" y2="940" stroke="#ffa726" stroke-width="2"/>
+  <text x="930" y="942" style="font-size: 10px;">Skip Path</text>
+</svg>
