@@ -1,0 +1,102 @@
+---
+- name: Deploy Bootstrap Configuration
+  hosts: "{{ device_ip }}"
+  gather_facts: false
+  vars:
+    device_platform: "{{ device_platform }}"
+    access_method: "{{ access_method | default('ssh') }}"
+    configuration: "{{ configuration }}"
+    backup_current: "{{ backup_current | default(true) }}"
+    commit_changes: "{{ commit_changes | default(true) }}"
+    
+  tasks:
+    - name: Set connection parameters based on platform
+      set_fact:
+        ansible_connection: "{{ 'network_cli' if device_platform in ['ios', 'nxos', 'eos', 'junos'] else 'ssh' }}"
+        ansible_network_os: "{{ device_platform }}"
+        
+    - name: Backup current configuration
+      block:
+        - name: Create backup (Cisco IOS/IOS-XE)
+          ios_config:
+            backup: yes
+            backup_options:
+              filename: "backup_{{ inventory_hostname }}_{{ ansible_date_time.epoch }}.cfg"
+              dir_path: "/tmp/backups"
+          register: backup_result
+          when: device_platform in ['ios', 'ios-xe']
+          
+        - name: Create backup (Arista EOS)
+          eos_config:
+            backup: yes
+            backup_options:
+              filename: "backup_{{ inventory_hostname }}_{{ ansible_date_time.epoch }}.cfg" 
+              dir_path: "/tmp/backups"
+          register: backup_result
+          when: device_platform == 'eos'
+          
+        - name: Create backup (Juniper JunOS)
+          junos_config:
+            backup: yes
+            backup_options:
+              filename: "backup_{{ inventory_hostname }}_{{ ansible_date_time.epoch }}.cfg"
+              dir_path: "/tmp/backups"
+          register: backup_result
+          when: device_platform == 'junos'
+          
+      when: backup_current | bool
+      
+    - name: Deploy configuration based on platform
+      block:
+        - name: Deploy to Cisco IOS/IOS-XE
+          ios_config:
+            lines: "{{ configuration.split('\n') }}"
+            save_when: "{{ 'always' if commit_changes else 'never' }}"
+          register: deploy_result
+          when: device_platform in ['ios', 'ios-xe']
+          
+        - name: Deploy to Arista EOS  
+          eos_config:
+            lines: "{{ configuration.split('\n') }}"
+            save_when: "{{ 'always' if commit_changes else 'never' }}"
+          register: deploy_result
+          when: device_platform == 'eos'
+          
+        - name: Deploy to Juniper JunOS
+          junos_config:
+            lines: "{{ configuration.split('\n') }}"
+            commit: "{{ commit_changes }}"
+          register: deploy_result
+          when: device_platform == 'junos'
+          
+        - name: Deploy to Cisco NX-OS
+          nxos_config:
+            lines: "{{ configuration.split('\n') }}"
+            save_when: "{{ 'always' if commit_changes else 'never' }}"
+          register: deploy_result
+          when: device_platform == 'nxos'
+          
+    - name: Set deployment results
+      set_fact:
+        result:
+          success: true
+          backup_id: "{{ backup_result.backup_path | basename | regex_replace('\\.cfg$', '') if backup_current else 'none' }}"
+          timestamp: "{{ ansible_date_time.iso8601 }}"
+          changes_applied: "{{ deploy_result.commands | length if deploy_result.commands is defined else 0 }}"
+          backup_path: "{{ backup_result.backup_path if backup_current else 'none' }}"
+          
+    - name: Display deployment result
+      debug:
+        var: result
+        
+  rescue:
+    - name: Set failure result
+      set_fact:
+        result:
+          success: false
+          error: "{{ ansible_failed_result.msg }}"
+          timestamp: "{{ ansible_date_time.iso8601 }}"
+          
+    - name: Display failure result
+      debug:
+        var: result

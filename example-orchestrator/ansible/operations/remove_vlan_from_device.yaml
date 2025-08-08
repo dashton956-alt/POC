@@ -1,0 +1,204 @@
+---
+- name: Remove VLAN from Network Device
+  hosts: "{{ device_ip }}"
+  gather_facts: false
+  vars:
+    device_platform: "{{ device_platform }}"
+    vlan_id: "{{ vlan_id }}"
+    vlan_name: "{{ vlan_name }}"
+    force_remove: "{{ force_remove | default(false) }}"
+    cleanup_interfaces: "{{ cleanup_interfaces | default(true) }}"
+    
+  tasks:
+    - name: Set connection parameters
+      set_fact:
+        ansible_connection: network_cli
+        ansible_network_os: "{{ device_platform }}"
+        
+    - name: Get current VLAN information
+      block:
+        - name: Get VLAN info (Cisco IOS/IOS-XE)
+          ios_command:
+            commands:
+              - "show vlan id {{ vlan_id }}"
+          register: vlan_info_ios
+          when: device_platform in ['ios', 'ios-xe']
+          
+        - name: Get VLAN info (Arista EOS)
+          eos_command:
+            commands:
+              - "show vlan {{ vlan_id }}"
+          register: vlan_info_eos
+          when: device_platform == 'eos'
+          
+        - name: Get VLAN info (Cisco NX-OS)
+          nxos_command:
+            commands:
+              - "show vlan id {{ vlan_id }}"
+          register: vlan_info_nxos
+          when: device_platform == 'nxos'
+          
+        - name: Get VLAN info (Juniper JunOS)
+          junos_command:
+            commands:
+              - "show vlans {{ vlan_name }}"
+          register: vlan_info_junos
+          when: device_platform == 'junos'
+          
+    - name: Check if VLAN exists
+      set_fact:
+        vlan_exists: true
+      when: 
+        - (device_platform in ['ios', 'ios-xe'] and vlan_id|string in vlan_info_ios.stdout[0]) or
+          (device_platform == 'eos' and vlan_id|string in vlan_info_eos.stdout[0]) or
+          (device_platform == 'nxos' and vlan_id|string in vlan_info_nxos.stdout[0]) or
+          (device_platform == 'junos' and vlan_name in vlan_info_junos.stdout[0])
+          
+    - name: Skip if VLAN doesn't exist
+      meta: end_play
+      when: vlan_exists is not defined
+      
+    - name: Get interfaces using this VLAN
+      block:
+        - name: Get interface info (Cisco IOS/IOS-XE)
+          ios_command:
+            commands:
+              - "show interfaces switchport | include VLAN {{ vlan_id }}"
+          register: interface_info_ios
+          when: device_platform in ['ios', 'ios-xe']
+          
+        - name: Get interface info (Arista EOS) 
+          eos_command:
+            commands:
+              - "show interfaces switchport | grep -A5 -B5 {{ vlan_id }}"
+          register: interface_info_eos
+          when: device_platform == 'eos'
+          
+        - name: Get interface info (Cisco NX-OS)
+          nxos_command:
+            commands:
+              - "show interface switchport | grep -A5 -B5 {{ vlan_id }}"
+          register: interface_info_nxos  
+          when: device_platform == 'nxos'
+          
+    - name: Clean up interface assignments if requested
+      block:
+        - name: Remove VLAN from access ports (Cisco IOS/IOS-XE)
+          ios_config:
+            lines:
+              - "switchport access vlan 1"
+            parents: "interface {{ item }}"
+          loop: "{{ affected_access_interfaces | default([]) }}"
+          when: device_platform in ['ios', 'ios-xe'] and cleanup_interfaces
+          
+        - name: Remove VLAN from trunk ports (Cisco IOS/IOS-XE) 
+          ios_config:
+            lines:
+              - "switchport trunk allowed vlan remove {{ vlan_id }}"
+            parents: "interface {{ item }}"
+          loop: "{{ affected_trunk_interfaces | default([]) }}"
+          when: device_platform in ['ios', 'ios-xe'] and cleanup_interfaces
+          
+        - name: Remove VLAN from access ports (Arista EOS)
+          eos_config:
+            lines:
+              - "switchport access vlan 1"
+            parents: "interface {{ item }}"
+          loop: "{{ affected_access_interfaces | default([]) }}"
+          when: device_platform == 'eos' and cleanup_interfaces
+          
+        - name: Remove VLAN from trunk ports (Arista EOS)
+          eos_config:
+            lines:
+              - "switchport trunk allowed vlan remove {{ vlan_id }}"
+            parents: "interface {{ item }}"
+          loop: "{{ affected_trunk_interfaces | default([]) }}"
+          when: device_platform == 'eos' and cleanup_interfaces
+          
+      when: cleanup_interfaces
+      
+    - name: Remove SVI interface if exists
+      block:
+        - name: Remove SVI (Cisco IOS/IOS-XE)
+          ios_config:
+            lines:
+              - "no interface vlan {{ vlan_id }}"
+          when: device_platform in ['ios', 'ios-xe']
+          register: svi_removal_ios
+          
+        - name: Remove SVI (Arista EOS)
+          eos_config:
+            lines:
+              - "no interface vlan {{ vlan_id }}"
+          when: device_platform == 'eos'
+          register: svi_removal_eos
+          
+        - name: Remove SVI (Cisco NX-OS)
+          nxos_config:
+            lines:
+              - "no interface vlan {{ vlan_id }}"
+          when: device_platform == 'nxos'
+          register: svi_removal_nxos
+          
+        - name: Remove IRB interface (Juniper JunOS)
+          junos_config:
+            lines:
+              - "delete interfaces irb unit {{ vlan_id }}"
+          when: device_platform == 'junos'
+          register: svi_removal_junos
+          
+    - name: Remove VLAN configuration
+      block:
+        - name: Remove VLAN (Cisco IOS/IOS-XE)
+          ios_config:
+            lines:
+              - "no vlan {{ vlan_id }}"
+          when: device_platform in ['ios', 'ios-xe']
+          register: vlan_removal_ios
+          
+        - name: Remove VLAN (Arista EOS)
+          eos_config:
+            lines:
+              - "no vlan {{ vlan_id }}"
+          when: device_platform == 'eos'
+          register: vlan_removal_eos
+          
+        - name: Remove VLAN (Cisco NX-OS)
+          nxos_config:
+            lines:
+              - "no vlan {{ vlan_id }}"
+          when: device_platform == 'nxos'
+          register: vlan_removal_nxos
+          
+        - name: Remove VLAN (Juniper JunOS)
+          junos_config:
+            lines:
+              - "delete vlans {{ vlan_name }}"
+          when: device_platform == 'junos'
+          register: vlan_removal_junos
+          
+    - name: Set success result
+      set_fact:
+        result:
+          success: true
+          vlan_removed: true
+          svi_removed: "{{ (svi_removal_ios is defined and svi_removal_ios.changed) or (svi_removal_eos is defined and svi_removal_eos.changed) or (svi_removal_nxos is defined and svi_removal_nxos.changed) or (svi_removal_junos is defined and svi_removal_junos.changed) }}"
+          interfaces_cleaned: "{{ (affected_access_interfaces | default([]) | length) + (affected_trunk_interfaces | default([]) | length) }}"
+          timestamp: "{{ ansible_date_time.iso8601 }}"
+          
+    - name: Display result
+      debug:
+        var: result
+        
+  rescue:
+    - name: Set failure result
+      set_fact:
+        result:
+          success: false
+          error: "{{ ansible_failed_result.msg }}"
+          timestamp: "{{ ansible_date_time.iso8601 }}"
+          vlan_existed: "{{ vlan_exists | default(false) }}"
+          
+    - name: Display failure result
+      debug:
+        var: result

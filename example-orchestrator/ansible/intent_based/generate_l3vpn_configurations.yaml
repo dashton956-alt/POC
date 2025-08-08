@@ -1,0 +1,257 @@
+---
+# L3VPN Configuration Generation Playbook
+# Generate device-specific L3VPN configurations
+name: Generate L3VPN Configurations
+hosts: all
+gather_facts: false
+vars:
+  service: "{{ service }}"
+  sites: "{{ sites }}"
+  topology: "{{ topology }}"
+  resources: "{{ resources }}"
+
+tasks:
+  - name: Create configuration directory
+    file:
+      path: "/tmp/l3vpn_configs/{{ service.name }}"
+      state: directory
+    delegate_to: localhost
+    run_once: true
+
+  - name: Detect PE router platform
+    snmp_facts:
+      host: "{{ inventory_hostname }}"
+      community: "{{ snmp_community | default('public') }}"
+      version: v2c
+    register: device_info
+    delegate_to: localhost
+    ignore_errors: true
+
+  - name: Set device platform and role
+    set_fact:
+      device_platform: "{{ 'cisco_ios' if 'cisco' in device_info.ansible_facts.ansible_sysdescr.lower() else 
+                           'juniper_junos' if 'juniper' in device_info.ansible_facts.ansible_sysdescr.lower() else 'generic' }}"
+      device_role: "{{ 'hub_pe' if inventory_hostname in hub_pe_list else 'spoke_pe' }}"
+    vars:
+      hub_pe_list: "{{ sites | selectattr('site_role', 'equalto', 'hub') | map(attribute='device_ip') | list }}"
+
+  # CISCO IOS XE L3VPN CONFIGURATION GENERATION
+  - name: Generate Cisco IOS XE L3VPN configuration
+    block:
+      - name: Generate VRF configuration - Cisco
+        template:
+          src: cisco_vrf_config.j2
+          dest: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_vrf.cfg"
+        vars:
+          vrf_name: "{{ service.vrf_name }}"
+          route_distinguisher: "{{ service.route_distinguisher }}"
+          route_targets: "{{ service.route_targets }}"
+          customer_sites: "{{ sites | selectattr('device_ip', 'equalto', inventory_hostname) | list }}"
+        delegate_to: localhost
+
+      - name: Generate interface configuration - Cisco
+        template:
+          src: cisco_interface_config.j2
+          dest: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_interfaces.cfg"
+        vars:
+          site_data: "{{ sites | selectattr('device_ip', 'equalto', inventory_hostname) | first }}"
+          vrf_name: "{{ service.vrf_name }}"
+        delegate_to: localhost
+
+      - name: Generate BGP configuration - Cisco
+        template:
+          src: cisco_bgp_config.j2
+          dest: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_bgp.cfg"
+        vars:
+          vrf_name: "{{ service.vrf_name }}"
+          route_distinguisher: "{{ service.route_distinguisher }}"
+          route_targets: "{{ service.route_targets }}"
+          site_data: "{{ sites | selectattr('device_ip', 'equalto', inventory_hostname) | first }}"
+          topology_type: "{{ topology.topology_type }}"
+        delegate_to: localhost
+
+      - name: Generate MPLS configuration - Cisco
+        template:
+          src: cisco_mpls_config.j2
+          dest: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_mpls.cfg"
+        vars:
+          mpls_interfaces: "{{ mpls_core_interfaces | default(['GigabitEthernet0/0/0']) }}"
+        delegate_to: localhost
+
+      - name: Combine Cisco configuration sections
+        assemble:
+          src: "/tmp/l3vpn_configs/{{ service.name }}/"
+          dest: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_complete.cfg"
+          regexp: "{{ inventory_hostname }}_.*\\.cfg$"
+        delegate_to: localhost
+    when: device_platform == "cisco_ios"
+
+  # JUNIPER JUNOS L3VPN CONFIGURATION GENERATION
+  - name: Generate Juniper JunOS L3VPN configuration
+    block:
+      - name: Generate routing instance configuration - Juniper
+        template:
+          src: juniper_routing_instance.j2
+          dest: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_routing_instance.cfg"
+        vars:
+          vrf_name: "{{ service.vrf_name }}"
+          route_distinguisher: "{{ service.route_distinguisher }}"
+          route_targets: "{{ service.route_targets }}"
+          customer_sites: "{{ sites | selectattr('device_ip', 'equalto', inventory_hostname) | list }}"
+        delegate_to: localhost
+
+      - name: Generate interface configuration - Juniper
+        template:
+          src: juniper_interface_config.j2
+          dest: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_interfaces.cfg"
+        vars:
+          site_data: "{{ sites | selectattr('device_ip', 'equalto', inventory_hostname) | first }}"
+          vrf_name: "{{ service.vrf_name }}"
+        delegate_to: localhost
+
+      - name: Generate protocols configuration - Juniper
+        template:
+          src: juniper_protocols_config.j2
+          dest: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_protocols.cfg"
+        vars:
+          vrf_name: "{{ service.vrf_name }}"
+        delegate_to: localhost
+
+      - name: Combine Juniper configuration sections
+        assemble:
+          src: "/tmp/l3vpn_configs/{{ service.name }}/"
+          dest: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_complete.cfg"
+          regexp: "{{ inventory_hostname }}_.*\\.cfg$"
+        delegate_to: localhost
+    when: device_platform == "juniper_junos"
+
+  # QOS CONFIGURATION GENERATION
+  - name: Generate QoS configuration
+    template:
+      src: "{{ device_platform }}_qos_config.j2"
+      dest: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_qos.cfg"
+    vars:
+      qos_requirements: "{{ qos_requirements }}"
+      service_class: "{{ service.qos_class | default('silver') }}"
+      bandwidth_profile: "{{ qos_requirements.bandwidth_profile }}"
+    delegate_to: localhost
+
+  # SECURITY CONFIGURATION GENERATION
+  - name: Generate security configuration
+    template:
+      src: "{{ device_platform }}_security_config.j2"  
+      dest: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_security.cfg"
+    vars:
+      security_controls: "{{ qos_requirements.security_controls }}"
+      access_lists: "{{ generate_access_lists() }}"
+    delegate_to: localhost
+
+  # VALIDATION AND SYNTAX CHECK
+  - name: Perform configuration syntax validation - Cisco
+    block:
+      - name: Validate Cisco configuration syntax
+        ios_config:
+          lines: "{{ lookup('file', '/tmp/l3vpn_configs/' + service.name + '/' + inventory_hostname + '_complete.cfg').split('\n') }}"
+          match: none
+          replace: config
+          backup: true
+          check_mode: true
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+        register: cisco_syntax_check
+    when: device_platform == "cisco_ios"
+    ignore_errors: true
+
+  - name: Perform configuration syntax validation - Juniper
+    block:
+      - name: Validate Juniper configuration syntax
+        junos_config:
+          src: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_complete.cfg"
+          check: true
+        vars:
+          ansible_connection: netconf
+          ansible_network_os: junos
+        register: juniper_syntax_check
+    when: device_platform == "juniper_junos"
+    ignore_errors: true
+
+  # COMPILE CONFIGURATION RESULTS
+  - name: Compile configuration generation results
+    set_fact:
+      config_generation_result:
+        device: "{{ inventory_hostname }}"
+        platform: "{{ device_platform }}"
+        role: "{{ device_role }}"
+        service_name: "{{ service.name }}"
+        vrf_name: "{{ service.vrf_name }}"
+        config_file: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_complete.cfg"
+        config_size: "{{ ansible_stat.stat.size if config_file_stat is not failed else 0 }}"
+        syntax_valid: "{{ 
+          (device_platform == 'cisco_ios' and cisco_syntax_check is not failed) or
+          (device_platform == 'juniper_junos' and juniper_syntax_check is not failed) or
+          device_platform == 'generic'
+        }}"
+        generation_timestamp: "{{ ansible_date_time.iso8601 }}"
+    vars:
+      config_file_stat: "{{ ansible_stat }}"
+
+  - name: Get configuration file stats
+    stat:
+      path: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_complete.cfg"
+    register: ansible_stat
+    delegate_to: localhost
+
+  # STORE CONFIGURATION IN DATABASE/REPOSITORY
+  - name: Store configuration in version control
+    block:
+      - name: Initialize git repository for service configurations
+        git:
+          repo: "https://github.com/network-configs/l3vpn-configs.git"
+          dest: "/tmp/l3vpn_configs/{{ service.name }}/git_repo"
+          clone: true
+        delegate_to: localhost
+        run_once: true
+        ignore_errors: true
+
+      - name: Copy configuration to git repository
+        copy:
+          src: "/tmp/l3vpn_configs/{{ service.name }}/{{ inventory_hostname }}_complete.cfg"
+          dest: "/tmp/l3vpn_configs/{{ service.name }}/git_repo/{{ inventory_hostname }}.cfg"
+        delegate_to: localhost
+
+      - name: Commit configuration to version control
+        shell: |
+          cd /tmp/l3vpn_configs/{{ service.name }}/git_repo
+          git add {{ inventory_hostname }}.cfg
+          git commit -m "Add L3VPN configuration for {{ inventory_hostname }} - Service: {{ service.name }}"
+        delegate_to: localhost
+        ignore_errors: true
+    when: version_control_enabled | default(true)
+
+  # SEND RESULTS TO ORCHESTRATOR
+  - name: Send configuration generation results to orchestrator
+    uri:
+      url: "{{ callback_route }}"
+      method: POST
+      body_format: json
+      body:
+        device: "{{ inventory_hostname }}"
+        config_generation_result: "{{ config_generation_result }}"
+        generated_config: "{{ lookup('file', '/tmp/l3vpn_configs/' + service.name + '/' + inventory_hostname + '_complete.cfg') }}"
+        status: "{{ 'success' if config_generation_result.syntax_valid else 'failed' }}"
+    delegate_to: localhost
+    when: callback_route is defined
+
+  - name: Display configuration generation summary
+    debug:
+      msg: |
+        L3VPN Configuration Generation Summary:
+        Device: {{ inventory_hostname }}
+        Platform: {{ device_platform }}
+        Role: {{ device_role }}
+        Service: {{ service.name }}
+        VRF: {{ service.vrf_name }}
+        Config File: {{ config_generation_result.config_file }}
+        Syntax Valid: {{ config_generation_result.syntax_valid }}
+        Size: {{ config_generation_result.config_size }} bytes

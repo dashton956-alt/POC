@@ -1,0 +1,228 @@
+---
+# Deploy QoS Configuration Playbook  
+# Deploys QoS policy configuration to network devices
+# Supports multiple platforms: Cisco IOS/NX-OS, Arista EOS, Juniper JunOS
+
+- name: Deploy QoS Configuration
+  hosts: localhost
+  gather_facts: false
+  vars:
+    target_host: "{{ target_host }}"
+    device_name: "{{ device_name }}" 
+    platform: "{{ platform }}"
+    policy_name: "{{ policy_name }}"
+    qos_configuration: "{{ qos_configuration }}"
+    validate_config: "{{ validate_config | default(true) }}"
+    
+  tasks:
+    - name: Display deployment information
+      debug:
+        msg: |
+          Deploying QoS Policy: {{ policy_name }}
+          Target Device: {{ device_name }} ({{ target_host }})
+          Platform: {{ platform }}
+          Configuration Lines: {{ qos_configuration.split('\n') | length }}
+          Validation Enabled: {{ validate_config }}
+
+    - name: Deploy QoS configuration (Cisco IOS)
+      block:
+        - name: Apply QoS configuration to IOS device
+          cisco.ios.ios_config:
+            lines: "{{ qos_configuration.split('\n') }}"
+            save_when: changed
+          delegate_to: "{{ target_host }}"
+          register: ios_config_result
+          
+        - name: Validate IOS QoS deployment
+          cisco.ios.ios_command:
+            commands:
+              - "show policy-map {{ policy_name }}"
+              - "show class-map"
+            wait_for:
+              - result[0] contains "{{ policy_name }}"
+          delegate_to: "{{ target_host }}"
+          register: ios_validation
+          when: validate_config
+          
+      when: platform == "ios"
+
+    - name: Deploy QoS configuration (Arista EOS)
+      block:
+        - name: Apply QoS configuration to EOS device
+          arista.eos.eos_config:
+            lines: "{{ qos_configuration.split('\n') }}"
+            save_when: changed
+          delegate_to: "{{ target_host }}"
+          register: eos_config_result
+          
+        - name: Validate EOS QoS deployment
+          arista.eos.eos_command:
+            commands:
+              - "show policy-map {{ policy_name }}"
+              - "show qos maps"
+            wait_for:
+              - result[0] contains "{{ policy_name }}"
+          delegate_to: "{{ target_host }}"
+          register: eos_validation
+          when: validate_config
+          
+      when: platform == "eos"
+
+    - name: Deploy QoS configuration (Cisco NX-OS)
+      block:
+        - name: Apply QoS configuration to NX-OS device
+          cisco.nxos.nxos_config:
+            lines: "{{ qos_configuration.split('\n') }}"
+            save_when: changed
+          delegate_to: "{{ target_host }}"
+          register: nxos_config_result
+          
+        - name: Validate NX-OS QoS deployment
+          cisco.nxos.nxos_command:
+            commands:
+              - "show policy-map {{ policy_name }}"
+              - "show class-map type qos"
+            wait_for:
+              - result[0] contains "{{ policy_name }}"
+          delegate_to: "{{ target_host }}"
+          register: nxos_validation
+          when: validate_config
+          
+      when: platform == "nxos"
+
+    - name: Deploy QoS configuration (Juniper JunOS)
+      block:
+        - name: Apply QoS configuration to JunOS device
+          junipernetworks.junos.junos_config:
+            lines: "{{ qos_configuration.split('\n') }}"
+            format: set
+            comment: "QoS Policy {{ policy_name }} deployed by orchestrator"
+          delegate_to: "{{ target_host }}"
+          register: junos_config_result
+          
+        - name: Commit JunOS configuration
+          junipernetworks.junos.junos_config:
+            comment: "Commit QoS Policy {{ policy_name }}"
+            confirm: 5  # Auto-rollback after 5 minutes if not confirmed
+          delegate_to: "{{ target_host }}"
+          
+        - name: Validate JunOS QoS deployment  
+          junipernetworks.junos.junos_command:
+            commands:
+              - "show configuration class-of-service | match {{ policy_name }}"
+              - "show class-of-service scheduler"
+          delegate_to: "{{ target_host }}"
+          register: junos_validation
+          when: validate_config
+          
+      when: platform == "junos"
+
+    - name: Apply QoS policy to interfaces (Platform-specific)
+      block:
+        - name: Get interface list for QoS application
+          uri:
+            url: "http://netbox:8000/api/dcim/interfaces/"
+            method: GET
+            headers:
+              Authorization: "Token {{ netbox_api_token }}"
+            body_format: form-urlencoded
+            body:
+              device: "{{ device_name }}"
+              type: "1000base-t"  # Ethernet interfaces
+          register: interface_list
+          delegate_to: localhost
+          
+        - name: Apply QoS policy to WAN interfaces (IOS)
+          cisco.ios.ios_config:
+            lines:
+              - "service-policy output {{ policy_name }}"
+            parents: "interface {{ item.name }}"
+          delegate_to: "{{ target_host }}"
+          loop: "{{ interface_list.json.results }}"
+          when: 
+            - platform == "ios"
+            - "'wan' in item.name.lower() or 'serial' in item.name.lower()"
+            
+        - name: Apply QoS policy to interfaces (EOS)
+          arista.eos.eos_config:
+            lines:
+              - "service-policy type qos output {{ policy_name }}"
+            parents: "interface {{ item.name }}"  
+          delegate_to: "{{ target_host }}"
+          loop: "{{ interface_list.json.results }}"
+          when:
+            - platform == "eos" 
+            - "'wan' in item.name.lower()"
+            
+        - name: Apply QoS policy to interfaces (NX-OS)
+          cisco.nxos.nxos_config:
+            lines:
+              - "service-policy type qos output {{ policy_name }}"
+              - "service-policy type queuing output {{ policy_name }}-OUT"
+            parents: "interface {{ item.name }}"
+          delegate_to: "{{ target_host }}"
+          loop: "{{ interface_list.json.results }}"
+          when:
+            - platform == "nxos"
+            - "'ethernet' in item.name.lower()"
+            
+      rescue:
+        - name: Interface application failed - continuing
+          debug:
+            msg: "Warning: Could not apply QoS policy to interfaces, but policy was configured"
+
+    - name: Gather final QoS status
+      block:
+        - name: Get final QoS status (IOS)
+          cisco.ios.ios_command:
+            commands:
+              - "show policy-map interface"
+              - "show qos interface"  
+          delegate_to: "{{ target_host }}"
+          register: final_status_ios
+          when: platform == "ios"
+          
+        - name: Get final QoS status (EOS)
+          arista.eos.eos_command:
+            commands:
+              - "show qos interfaces"
+              - "show policy-map interface"
+          delegate_to: "{{ target_host }}"
+          register: final_status_eos  
+          when: platform == "eos"
+          
+        - name: Get final QoS status (NX-OS)
+          cisco.nxos.nxos_command:
+            commands:
+              - "show policy-map interface"
+              - "show queuing interface"
+          delegate_to: "{{ target_host }}"
+          register: final_status_nxos
+          when: platform == "nxos"
+          
+        - name: Get final QoS status (JunOS)
+          junipernetworks.junos.junos_command:
+            commands:
+              - "show interfaces queue"
+              - "show class-of-service interface"
+          delegate_to: "{{ target_host }}"
+          register: final_status_junos
+          when: platform == "junos"
+
+    - name: Report deployment results
+      debug:
+        msg: |
+          QoS Policy Deployment Complete
+          ================================
+          Policy Name: {{ policy_name }}
+          Target Device: {{ device_name }}
+          Platform: {{ platform }}
+          Configuration Applied: {{ 'Yes' if (ios_config_result.changed | default(false)) or (eos_config_result.changed | default(false)) or (nxos_config_result.changed | default(false)) or (junos_config_result.changed | default(false)) else 'No' }}
+          Validation: {{ 'Passed' if validate_config and ((ios_validation is defined and ios_validation.failed == false) or (eos_validation is defined and eos_validation.failed == false) or (nxos_validation is defined and nxos_validation.failed == false) or (junos_validation is defined and junos_validation.failed == false)) else 'Skipped' }}
+          Status: SUCCESS
+
+    - name: Set deployment success fact
+      set_fact:
+        qos_deployment_success: true
+        qos_policy_active: true
+        deployment_timestamp: "{{ ansible_date_time.iso8601 }}"

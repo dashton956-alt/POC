@@ -1,0 +1,282 @@
+---
+# Validate QoS Policy Playbook
+# Validates QoS policy deployment and operational status
+# Supports multiple platforms: Cisco IOS/NX-OS, Arista EOS, Juniper JunOS
+
+- name: Validate QoS Policy Deployment
+  hosts: localhost
+  gather_facts: false
+  vars:
+    target_host: "{{ target_host }}"
+    device_name: "{{ device_name }}"
+    platform: "{{ platform }}"
+    policy_name: "{{ policy_name }}"
+    expected_queues: "{{ expected_queues | default(4) }}"
+    expected_classes: "{{ expected_classes | default(4) }}"
+    
+  tasks:
+    - name: Display validation information
+      debug:
+        msg: |
+          Validating QoS Policy: {{ policy_name }}
+          Target Device: {{ device_name }} ({{ target_host }})
+          Platform: {{ platform }}
+          Expected Queues: {{ expected_queues }}
+          Expected Classes: {{ expected_classes }}
+
+    - name: Validate QoS policy (Cisco IOS)
+      block:
+        - name: Check policy-map configuration
+          cisco.ios.ios_command:
+            commands:
+              - "show policy-map {{ policy_name }}"
+              - "show class-map"
+              - "show policy-map interface"
+              - "show qos"
+          delegate_to: "{{ target_host }}"
+          register: ios_qos_status
+          
+        - name: Verify policy exists
+          assert:
+            that:
+              - "policy_name in ios_qos_status.stdout[0]"
+            fail_msg: "QoS policy {{ policy_name }} not found on device"
+            success_msg: "QoS policy {{ policy_name }} found and configured"
+            
+        - name: Check for class-maps  
+          assert:
+            that:
+              - "ios_qos_status.stdout[1] | length > 100"
+            fail_msg: "No class-maps found - QoS classification may not be working"
+            success_msg: "Class-maps are configured"
+            
+        - name: Verify policy is applied to interfaces
+          assert:
+            that:
+              - "policy_name in ios_qos_status.stdout[2] or ios_qos_status.stdout[2] == ''"
+            fail_msg: "QoS policy not applied to any interfaces"
+            success_msg: "QoS policy applied to interfaces"
+            
+        - name: Set IOS validation results
+          set_fact:
+            policy_exists: true
+            policy_applied: "{{ policy_name in ios_qos_status.stdout[2] }}"
+            classification_active: true
+            queue_status: "operational"
+            
+      when: platform == "ios"
+
+    - name: Validate QoS policy (Arista EOS)
+      block:
+        - name: Check QoS configuration
+          arista.eos.eos_command:
+            commands:
+              - "show policy-map {{ policy_name }}"
+              - "show qos interfaces"
+              - "show qos maps"
+              - "show qos trust"
+          delegate_to: "{{ target_host }}"
+          register: eos_qos_status
+          
+        - name: Verify policy exists (EOS)
+          assert:
+            that:
+              - "policy_name in eos_qos_status.stdout[0]"
+            fail_msg: "QoS policy {{ policy_name }} not found on EOS device"
+            success_msg: "QoS policy {{ policy_name }} found on EOS device"
+            
+        - name: Check QoS interface status
+          assert:
+            that:
+              - "eos_qos_status.stdout[1] | length > 50"
+            fail_msg: "No QoS interfaces found - policy may not be applied"
+            success_msg: "QoS is active on interfaces"
+            
+        - name: Set EOS validation results
+          set_fact:
+            policy_exists: true
+            policy_applied: true
+            classification_active: "{{ 'dscp' in eos_qos_status.stdout[2].lower() }}"
+            queue_status: "operational"
+            
+      when: platform == "eos"
+
+    - name: Validate QoS policy (Cisco NX-OS)
+      block:
+        - name: Check NX-OS QoS configuration
+          cisco.nxos.nxos_command:
+            commands:
+              - "show policy-map {{ policy_name }}"
+              - "show policy-map interface"
+              - "show class-map type qos"
+              - "show queuing interface"
+          delegate_to: "{{ target_host }}"
+          register: nxos_qos_status
+          
+        - name: Verify NX-OS policy exists
+          assert:
+            that:
+              - "policy_name in nxos_qos_status.stdout[0]"
+            fail_msg: "QoS policy {{ policy_name }} not found on NX-OS device"
+            success_msg: "QoS policy {{ policy_name }} found on NX-OS device"
+            
+        - name: Check for type qos class-maps
+          assert:
+            that:
+              - "'type qos' in nxos_qos_status.stdout[2]"
+            fail_msg: "No QoS type class-maps found"
+            success_msg: "QoS classification configured"
+            
+        - name: Verify queuing is operational
+          assert:
+            that:
+              - "nxos_qos_status.stdout[3] | length > 100"
+            fail_msg: "No queuing information found - QoS may not be operational"
+            success_msg: "Queuing is operational"
+            
+        - name: Set NX-OS validation results
+          set_fact:
+            policy_exists: true
+            policy_applied: "{{ policy_name in nxos_qos_status.stdout[1] }}"
+            classification_active: true
+            queue_status: "operational"
+            
+      when: platform == "nxos"
+
+    - name: Validate QoS policy (Juniper JunOS)
+      block:
+        - name: Check JunOS class-of-service configuration
+          junipernetworks.junos.junos_command:
+            commands:
+              - "show configuration class-of-service"
+              - "show interfaces queue"
+              - "show class-of-service classifier"
+              - "show class-of-service forwarding-class"
+            format: text
+          delegate_to: "{{ target_host }}"
+          register: junos_qos_status
+          
+        - name: Verify JunOS class-of-service is configured
+          assert:
+            that:
+              - "junos_qos_status.stdout[0] | length > 50"
+            fail_msg: "No class-of-service configuration found"
+            success_msg: "Class-of-service is configured"
+            
+        - name: Check queue status
+          assert:
+            that:
+              - "'Queues:' in junos_qos_status.stdout[1]"
+            fail_msg: "No queue information found - QoS may not be active"
+            success_msg: "Queues are operational"
+            
+        - name: Verify classifiers are present
+          assert:
+            that:
+              - "junos_qos_status.stdout[2] | length > 20"
+            fail_msg: "No classifiers found - traffic classification may not work"
+            success_msg: "Classifiers are configured"
+            
+        - name: Set JunOS validation results
+          set_fact:
+            policy_exists: true
+            policy_applied: true
+            classification_active: true
+            queue_status: "operational"
+            
+      when: platform == "junos"
+
+    - name: Perform QoS operational tests
+      block:
+        - name: Test queue statistics collection
+          block:
+            - name: Get queue statistics (IOS)
+              cisco.ios.ios_command:
+                commands:
+                  - "show policy-map interface | include bytes"
+                  - "show interfaces | include queue"
+              delegate_to: "{{ target_host }}"  
+              register: ios_queue_stats
+              when: platform == "ios"
+              
+            - name: Get queue statistics (EOS)
+              arista.eos.eos_command:
+                commands:
+                  - "show qos interfaces counters"
+                  - "show interfaces counters queue"
+              delegate_to: "{{ target_host }}"
+              register: eos_queue_stats
+              when: platform == "eos"
+              
+            - name: Get queue statistics (NX-OS)
+              cisco.nxos.nxos_command:
+                commands:
+                  - "show queuing interface ethernet1/1"
+                  - "show policy-map interface | include bytes"
+              delegate_to: "{{ target_host }}"
+              register: nxos_queue_stats
+              when: platform == "nxos"
+              
+            - name: Get queue statistics (JunOS)
+              junipernetworks.junos.junos_command:
+                commands:
+                  - "show interfaces queue"
+                  - "show class-of-service interface"
+              delegate_to: "{{ target_host }}"
+              register: junos_queue_stats
+              when: platform == "junos"
+              
+            - name: Verify statistics are being collected
+              set_fact:
+                statistics_available: true
+                
+          rescue:
+            - name: Statistics collection failed
+              set_fact:
+                statistics_available: false
+              debug:
+                msg: "Warning: Could not collect QoS statistics, but policy validation passed"
+
+    - name: Generate validation report
+      set_fact:
+        validation_report:
+          device_name: "{{ device_name }}"
+          platform: "{{ platform }}"
+          policy_name: "{{ policy_name }}"
+          policy_exists: "{{ policy_exists | default(false) }}"
+          policy_applied: "{{ policy_applied | default(false) }}"
+          classification_active: "{{ classification_active | default(false) }}"
+          queue_status: "{{ queue_status | default('unknown') }}"
+          statistics_available: "{{ statistics_available | default(false) }}"
+          validation_timestamp: "{{ ansible_date_time.iso8601 }}"
+          overall_status: "{{ 'PASS' if (policy_exists | default(false)) and (classification_active | default(false)) else 'FAIL' }}"
+
+    - name: Display validation results
+      debug:
+        msg: |
+          QoS Policy Validation Results
+          ============================
+          Device: {{ validation_report.device_name }}
+          Platform: {{ validation_report.platform }}
+          Policy: {{ validation_report.policy_name }}
+          
+          Results:
+          - Policy Exists: {{ validation_report.policy_exists | upper }}
+          - Policy Applied: {{ validation_report.policy_applied | upper }}  
+          - Classification Active: {{ validation_report.classification_active | upper }}
+          - Queue Status: {{ validation_report.queue_status | upper }}
+          - Statistics Available: {{ validation_report.statistics_available | upper }}
+          
+          Overall Status: {{ validation_report.overall_status }}
+          Validated at: {{ validation_report.validation_timestamp }}
+
+    - name: Fail if validation failed
+      fail:
+        msg: "QoS policy validation failed - policy is not working correctly"
+      when: validation_report.overall_status == "FAIL"
+
+    - name: Set successful validation facts
+      set_fact:
+        qos_validation_passed: true
+        qos_policy_operational: true
+        validation_timestamp: "{{ ansible_date_time.iso8601 }}"

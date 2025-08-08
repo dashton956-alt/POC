@@ -1,0 +1,57 @@
+---
+- name: Generate Bootstrap Configuration Template
+  hosts: localhost
+  gather_facts: false
+  vars:
+    template_name: "{{ template_name }}"
+    template_vars: "{{ template_vars }}"
+    output_format: "{{ output_format }}"
+    
+  tasks:
+    - name: Set template path based on device platform
+      set_fact:
+        template_path: "templates/bootstrap/{{ template_name }}_{{ output_format }}.j2"
+    
+    - name: Check if template exists
+      stat:
+        path: "{{ template_path }}"
+      register: template_check
+      
+    - name: Fail if template doesn't exist
+      fail:
+        msg: "Template {{ template_path }} not found"
+      when: not template_check.stat.exists
+    
+    - name: Generate configuration from template
+      template:
+        src: "{{ template_path }}"
+        dest: "/tmp/bootstrap_config_{{ ansible_date_time.epoch }}.cfg"
+      vars: "{{ template_vars }}"
+      register: config_generation
+    
+    - name: Read generated configuration
+      slurp:
+        src: "{{ config_generation.dest }}"
+      register: config_content
+    
+    - name: Calculate configuration checksum
+      set_fact:
+        config_checksum: "{{ config_content.content | b64decode | hash('sha256') }}"
+    
+    - name: Count configuration lines
+      set_fact:
+        line_count: "{{ (config_content.content | b64decode).split('\n') | length }}"
+    
+    - name: Set success result
+      set_fact:
+        result:
+          success: true
+          configuration: "{{ config_content.content | b64decode }}"
+          checksum: "{{ config_checksum }}"
+          line_count: "{{ line_count | int }}"
+          timestamp: "{{ ansible_date_time.iso8601 }}"
+          template_used: "{{ template_path }}"
+    
+    - name: Display result
+      debug:
+        var: result
