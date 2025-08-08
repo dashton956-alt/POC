@@ -37,8 +37,7 @@ A comprehensive Proof of Concept (POC) demonstrating Intent-Based Networking (IB
    ```bash
    # Open http://localhost:3000 in your browser
    # Navigate to "Workflows" and run:
-   # - task_import_vendors (import manufacturers)
-   # - task_import_device_types (import device types)
+   # - import_vendors (multi-vendor selection with direct NetBox integration)
    ```
    
    **Option B: Command Line**
@@ -61,17 +60,48 @@ POC/
 ├── netbox/                     # NetBox IPAM/DCIM platform
 │   ├── docker-compose.yml     # NetBox container orchestration
 │   ├── configuration/         # NetBox configuration files
+│   ├── docker/                # Docker build files
+│   ├── test-configuration/    # Test environment configs
 │   └── ...
 ├── example-orchestrator/       # Custom orchestrator service
 │   ├── docker-compose.yml     # Orchestrator container setup
-│   ├── workflows/             # Automation workflows
+│   ├── workflows/             # Automation workflows & tasks
+│   │   └── tasks/             # Individual workflow tasks
 │   ├── products/              # Product definitions
-│   └── services/              # Integration services
+│   ├── services/              # Integration services
+│   ├── ansible/               # Ansible playbooks
+│   ├── clab/                  # Container Lab configs
+│   ├── migrations/            # Database migrations
+│   ├── templates/             # Jinja2 templates
+│   ├── translations/          # Internationalization
+│   └── utils/                 # Utility functions
 ├── devicetype-library/         # NetBox device type definitions
-│   ├── device-types/          # Device type YAML files
+│   ├── device-types/          # Device type YAML files (8000+)
 │   ├── module-types/          # Module type definitions
-│   └── schema/                # Validation schemas
-├── device_import.py           # Device type import script
+│   ├── elevation-images/      # Device elevation images
+│   ├── module-images/         # Module images
+│   ├── schema/                # Validation schemas
+│   ├── scripts/               # Utility scripts
+│   └── tests/                 # Test suites
+├── docs/                      # 📚 Comprehensive Documentation
+│   ├── README.md              # Documentation index
+│   ├── HIGH_LEVEL_DESIGN.md   # System architecture overview
+│   ├── LOW_LEVEL_DESIGN.md    # Technical implementation details
+│   └── diagrams/              # System diagrams (Mermaid format)
+│       ├── 01_system_architecture_level1.md
+│       ├── 02_component_architecture_level2.md
+│       ├── 03_vendor_import_workflow.md
+│       ├── 04_data_flow_integration.md
+│       ├── 05_sequence_diagram_workflow.md
+│       └── 06_product_roadmap_kanban.md
+├── .env.example               # Environment configuration template
+├── docker-compose.dev.yml     # Development environment setup
+├── Makefile                   # Build and deployment commands
+├── CHANGELOG.md               # Version history
+├── CONTRIBUTING.md            # Contribution guidelines
+├── IMPORT_GUIDE.md            # Device import instructions
+├── UI_QUICKSTART.md           # Quick start for UI
+├── quickstart.sh              # Automated setup script
 └── README.md                  # This file
 ```
 
@@ -96,6 +126,47 @@ POC/
 - **Content**: 8000+ device types from major vendors
 - **Format**: YAML with JSON schema validation
 - **Vendors**: Cisco, Juniper, Arista, HP, Dell, and many more
+
+### Documentation System
+- **Purpose**: Comprehensive system documentation
+- **Location**: `/docs` directory
+- **Formats**: Markdown with Mermaid diagrams
+- **Content**: Architecture designs, technical specifications, project roadmap
+- **Access**: Native GitHub rendering, no external dependencies
+
+## 📚 Documentation
+
+This project includes comprehensive documentation covering all aspects of the system:
+
+### 🎯 Quick Access
+- **[Documentation Hub](docs/README.md)** - Complete documentation index
+- **[High-Level Design](docs/HIGH_LEVEL_DESIGN.md)** - System architecture and business logic
+- **[Low-Level Design](docs/LOW_LEVEL_DESIGN.md)** - Technical implementation details
+
+### 📊 System Diagrams
+All diagrams use Mermaid format for native GitHub rendering:
+- **[System Architecture](docs/diagrams/01_system_architecture_level1.md)** - High-level system overview
+- **[Component Architecture](docs/diagrams/02_component_architecture_level2.md)** - Detailed component interactions
+- **[Vendor Import Workflow](docs/diagrams/03_vendor_import_workflow.md)** - Complete workflow process
+- **[Data Flow Integration](docs/diagrams/04_data_flow_integration.md)** - Data processing pipeline
+- **[Sequence Diagram](docs/diagrams/05_sequence_diagram_workflow.md)** - Execution timeline
+- **[Product Roadmap](docs/diagrams/06_product_roadmap_kanban.md)** - Development milestones
+
+## 🆕 Recent Updates
+
+### Version 2.0 Features
+- ✅ **Multi-Vendor Selection**: Choose specific vendors or select all for import
+- ✅ **Enhanced Workflow Engine**: Improved state management and error handling
+- ✅ **Direct NetBox Integration**: Streamlined vendor import without dry-run mode
+- ✅ **Comprehensive Documentation**: Complete system design and technical specifications
+- ✅ **Mermaid Diagrams**: Native GitHub-rendered diagrams (no external dependencies)
+- ✅ **Improved Error Handling**: Detailed logging and graceful failure recovery
+
+### Workflow Enhancements
+- **Unlimited Vendor Selection**: No restrictions on number of vendors to import
+- **Real-time Progress Tracking**: Monitor workflow execution status
+- **Comprehensive Logging**: Detailed audit trail for all operations
+- **Automatic Recovery**: Retry mechanisms for failed operations
 
 ## 🔧 Configuration
 
@@ -132,51 +203,98 @@ To avoid conflicts, Redis instances use different ports:
 
 ## 📚 Usage
 
-### 1. NetBox Operations
+### 1. Vendor Import Workflow (Primary Feature)
 
-#### Create a Site
+#### Web UI Method (Recommended)
+```bash
+# 1. Open the orchestrator UI
+http://localhost:3000
+
+# 2. Navigate to Workflows section
+# 3. Select "Import Vendors" workflow
+# 4. Choose vendors to import:
+#    - Select specific vendors (Cisco, Arista, Juniper, etc.)
+#    - Or select "All" for complete import
+# 5. Submit workflow and monitor progress
+```
+
+#### API Method
+```bash
+curl -X POST http://localhost:8080/api/workflows/import-vendors \
+  -H "Content-Type: application/json" \
+  -d '{
+    "selected_vendors": ["Cisco", "Arista", "Juniper"],
+    "import_all": false
+  }'
+```
+
+#### Monitor Workflow Status
+```bash
+curl http://localhost:8080/api/workflows/{workflow_id}/status
+```
+
+### 2. NetBox Operations
+
+#### Access NetBox
+```bash
+# Web Interface
+http://localhost:8000
+
+# Default credentials
+Username: admin
+Password: admin
+```
+
+#### Create API Token
+1. Login to NetBox web interface
+2. Go to Admin → Users → API Tokens
+3. Create new token for orchestrator integration
+
+#### Python API Usage
 ```python
 import pynetbox
 nb = pynetbox.api('http://localhost:8000', token='your-token')
-site = nb.dcim.sites.create(name='datacenter-01', slug='dc01')
+
+# List imported manufacturers
+manufacturers = nb.dcim.manufacturers.all()
+print(f"Imported {len(manufacturers)} manufacturers")
+
+# List imported device types
+device_types = nb.dcim.device_types.all()
+print(f"Imported {len(device_types)} device types")
 ```
 
-#### Add Devices
-```python
-device_type = nb.dcim.device_types.get(model='catalyst-9300-48p')
-device = nb.dcim.devices.create(
-    name='switch-01',
-    device_type=device_type.id,
-    site=site.id
-)
-```
+### 3. Advanced Orchestrator Features
 
-### 2. Orchestrator Workflows
-
-#### Create Node Workflow
+#### Create Custom Workflow
 ```bash
-curl -X POST http://localhost:8080/api/workflows/node/create \
+curl -X POST http://localhost:8080/api/workflows/custom \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "core-router-01",
-    "location": "datacenter-01",
-    "device_type": "cisco-asr-9000"
+    "name": "provision-datacenter",
+    "steps": [
+      {"type": "create_site", "params": {"name": "DC01"}},
+      {"type": "import_devices", "params": {"vendor": "Cisco"}},
+      {"type": "configure_network", "params": {"template": "bgp-config"}}
+    ]
   }'
 ```
 
 #### GraphQL Query Example
 ```graphql
 query {
-  nodes {
+  workflows {
     id
     name
     status
-    ports {
+    created_at
+    steps {
       name
-      type
       status
+      duration
     }
   }
+}
 }
 ```
 
@@ -249,25 +367,47 @@ docker logs redis
 
 ## 🚀 Development
 
+### Branch Structure
+
+This repository uses a structured branching strategy:
+
+```
+main                           # Production-ready code
+├── netbox-feature-workflows   # Feature development branch
+└── documentation              # Comprehensive documentation branch
+```
+
+- **main**: Stable, production-ready code
+- **netbox-feature-workflows**: Active development of workflow features
+- **documentation**: Complete system documentation with Mermaid diagrams
+
 ### Setting Up Development Environment
 
 1. **Clone and Setup**
    ```bash
    git clone https://github.com/dashton956-alt/POC.git
    cd POC
+   
+   # Switch to development branch
+   git checkout netbox-feature-workflows
    ```
 
-2. **Virtual Environment** (for device_import.py)
+2. **Environment Configuration**
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   # or
-   venv\Scripts\activate     # Windows
-   pip install -r requirements.txt
+   # Copy environment templates
+   cp .env.example .env
+   cp netbox/.env.example netbox/.env
+   cp example-orchestrator/.env.example example-orchestrator/.env
+   
+   # Edit configuration files as needed
    ```
 
 3. **Development Containers**
    ```bash
+   # Start all services in development mode
+   docker-compose -f docker-compose.dev.yml up -d
+   
+   # Or start individually:
    # NetBox development mode
    cd netbox
    docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
@@ -277,10 +417,72 @@ docker logs redis
    docker-compose up -d
    ```
 
+4. **Python Development Setup** (for custom scripts)
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   # or
+   venv\Scripts\activate     # Windows
+   pip install -r requirements.txt
+   ```
+
+### Development Workflow
+
+```bash
+# 1. Create feature branch from development
+git checkout netbox-feature-workflows
+git pull origin netbox-feature-workflows
+git checkout -b feature/your-feature-name
+
+# 2. Make changes and test
+# 3. Commit with descriptive messages
+git add .
+git commit -m "feat: add new workflow capability"
+
+# 4. Push and create PR
+git push origin feature/your-feature-name
+# Create PR to netbox-feature-workflows branch
+```
+
+### Current Capabilities
+
+#### ✅ Implemented Features
+- **Multi-Vendor Device Import**: Select specific vendors or import all 8000+ device types
+- **NetBox Integration**: Direct creation of manufacturers, device types, and components
+- **Workflow Engine**: Asynchronous task processing with state management
+- **Error Handling**: Comprehensive logging and graceful failure recovery
+- **Web UI**: User-friendly interface for workflow management
+- **API Access**: RESTful and GraphQL endpoints
+- **Documentation**: Complete system architecture and technical specifications
+
+#### 🚧 In Development
+- **Performance Optimization**: Caching and parallel processing improvements
+- **Advanced Workflows**: Custom workflow builder and template system
+- **Monitoring Dashboard**: Real-time system health and performance metrics
+
+#### 📋 Roadmap
+- **Authentication & Authorization**: RBAC and enterprise authentication
+- **Multi-tenancy**: Organization isolation and resource management
+- **Mobile App**: iOS/Android applications for mobile management
+- **Advanced Reporting**: Custom reports and analytics
+- **Plugin System**: Third-party integrations and extensions
+
 ### Code Structure
 
+#### Orchestrator Components
+- **`workflows/`**: Workflow definitions and task implementations
+  - `tasks/import_vendors.py`: Multi-vendor import workflow
+  - `tasks/state_management.py`: Workflow state handling
+- **`services/`**: External service integrations
+  - `netbox.py`: NetBox API client and operations
+  - `git_client.py`: Git repository management
+- **`products/`**: Product and service definitions
+- **`utils/`**: Utility functions and helpers
+
 #### NetBox Integration
-- `services/netbox.py`: NetBox API client
+- **`services/netbox.py`**: NetBox API client and authentication
+- **`workflows/tasks/import_vendors.py`**: Vendor import implementation
+- **Configuration**: Environment-based NetBox connection setup
 - `products/services/netbox/`: NetBox-specific services
 - `device_import.py`: Device type import utility
 
@@ -369,13 +571,53 @@ python tests/definitions_test.py
 
 ## 🤝 Contributing
 
-### Development Workflow
-1. Fork the repository
-2. Create a feature branch
-3. Make changes with appropriate tests
-4. Submit a pull request
+We welcome contributions to improve the NetBox Orchestrator POC! Please see our [Contributing Guidelines](CONTRIBUTING.md) for detailed information.
 
-### Code Standards
+### Quick Contribution Steps
+1. **Fork the repository** and clone your fork
+2. **Create a feature branch** from `netbox-feature-workflows`
+   ```bash
+   git checkout netbox-feature-workflows
+   git checkout -b feature/your-feature-name
+   ```
+3. **Make your changes** with appropriate tests
+4. **Follow code standards**: Python PEP 8, descriptive commit messages
+5. **Update documentation** if adding new features
+6. **Submit a pull request** to the `netbox-feature-workflows` branch
+
+### Development Guidelines
+- **Code Quality**: Follow Python PEP 8 and include docstrings
+- **Testing**: Add unit tests for new functionality
+- **Documentation**: Update relevant documentation files
+- **Commit Messages**: Use conventional commit format (feat:, fix:, docs:, etc.)
+
+### Areas for Contribution
+- 🔧 **Core Features**: Workflow engine improvements
+- 📊 **UI/UX**: Frontend enhancements and user experience
+- 🧪 **Testing**: Test coverage expansion and automation
+- 📚 **Documentation**: Technical writing and tutorials
+- 🐛 **Bug Fixes**: Issue resolution and stability improvements
+
+## 📞 Support & Community
+
+### Getting Help
+- **Documentation**: Start with the [docs/](docs/) directory
+- **Issues**: Report bugs or request features via GitHub Issues
+- **Discussions**: Use GitHub Discussions for questions and community support
+
+### Resources
+- **[High-Level Design](docs/HIGH_LEVEL_DESIGN.md)**: System architecture overview
+- **[Low-Level Design](docs/LOW_LEVEL_DESIGN.md)**: Technical implementation details
+- **[Import Guide](IMPORT_GUIDE.md)**: Device import procedures
+- **[Quick Start Guide](UI_QUICKSTART.md)**: Getting started with the UI
+- **[Changelog](CHANGELOG.md)**: Version history and updates
+
+### Project Status
+- **Current Version**: 2.0 (Multi-vendor workflow capability)
+- **Development Branch**: `netbox-feature-workflows`
+- **Documentation Branch**: `documentation`
+- **Active Maintenance**: Regular updates and bug fixes
+- **Community**: Growing contributor base
 - Python: PEP 8 compliance
 - Documentation: Docstrings for all functions
 - Testing: Minimum 80% code coverage
