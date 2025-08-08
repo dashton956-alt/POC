@@ -1,26 +1,50 @@
-# Intent Based Orchestrator POC
+# Intent Based Orchestrator with Centralized API Management
 
-A comprehensive Proof of Concept (POC) demonstrating Intent-Based Networking (IBN) with an enhanced modern web interface. This project combines NetBox DCIM with a custom orchestrator to provide automated network device management, configuration, and monitoring through a professional dashboard.
+A comprehensive Intent-Based Networking (IBN) platform featuring **centralized API management** with multi-vendor network automation. This advanced system combines NetBox DCIM, orchestrated workflows, and intelligent device connectivity to provide enterprise-grade network infrastructure management.
 
-## ✨ New Enhanced Dashboard Features
+## 🎯 New Centralized API Management System
+
+### 🌐 Multi-Vendor Platform Support
+- **Cisco Catalyst Center**: Enterprise DNA Center API integration
+- **Juniper Mist Cloud**: AI-driven network operations platform
+- **Arista CloudVision**: Network-wide workload orchestration
+- **Fortinet FortiManager**: Centralized security management
+- **Palo Alto Panorama**: Unified firewall management
+- **Direct SSH Fallback**: Universal device access for any platform
+
+### 🔄 Intelligent Connection Optimization
+- **Platform-Aware Routing**: Automatic optimal API method selection
+- **NetBox IP Resolution**: Dynamic device IP retrieval from IPAM
+- **Fallback Mechanisms**: Automatic SSH fallback when APIs unavailable
+- **Concurrent Operations**: Async deployment for improved performance
+- **Connection Pooling**: Efficient resource management and reuse
+
+### 📋 Comprehensive Workflow Coverage
+- **Device Lifecycle**: Discovery, onboarding, bootstrap configuration, health checks
+- **Network Configuration**: BGP, OSPF, QoS, VLAN management, port channels
+- **Infrastructure Management**: Vendor imports, device types, NetBox integration
+- **Multi-Vendor Operations**: Concurrent configuration across different platforms
+- **Monitoring & Observability**: Network monitoring setup and health assessment
+
+## ✨ Enhanced Dashboard Features
 
 ### 🎨 Professional Web Interface
 - **Modern Dashboard**: Comprehensive system overview with real-time statistics
-- **System Status**: Live monitoring of all services (Orchestrator Engine, NetBox DCIM, UI)
+- **System Status**: Live monitoring of orchestrator engine, NetBox DCIM, and UI services
 - **NetBox Integration**: Direct integration showing manufacturers, device types, and devices
 - **Responsive Design**: Mobile-friendly interface with professional styling
 
-### 🔧 Workflow Management
-- **Organized Categories**: Workflows grouped by function (NetBox Integration, Network Operations, System Management)
-- **Infrastructure as Code (IAC)**: Automated infrastructure provisioning workflows
-- **Intent Based Networking**: Intelligent network automation and policy-driven configuration
-- **Quick Actions**: One-click access to common operations
+### 🔧 Advanced Workflow Management
+- **Organized Categories**: Workflows grouped by function (Device Lifecycle, Network Configuration, Infrastructure)
+- **Infrastructure as Code (IaC)**: Automated infrastructure provisioning workflows
+- **Intent Based Networking**: Intelligent network automation with policy-driven configuration
+- **Quick Actions**: One-click access to common network operations
 
-### 📊 Real-time Monitoring
+### 📊 Real-time Monitoring & Analytics
 - **Auto-refresh Statistics**: NetBox data updates every 30 seconds
 - **System Health Checks**: Comprehensive connectivity and performance monitoring  
 - **Visual Status Indicators**: Animated status indicators with pulse effects
-- **Error Handling**: Graceful fallbacks with informative error messages
+- **Centralized API Status**: Live monitoring of all platform API connections
 
 ## 🚀 Quick Start
 
@@ -39,25 +63,44 @@ A comprehensive Proof of Concept (POC) demonstrating Intent-Based Networking (IB
    cd POC
    ```
 
-2. **Start NetBox Services**
+2. **Configure Centralized API Management**
+   ```bash
+   # Copy and configure environment variables
+   cp .env.example .env
+   
+   # Edit .env file with your API endpoints:
+   # CATALYST_CENTER_URL=https://your-catalyst-center.domain
+   # CATALYST_CENTER_TOKEN=your_api_token
+   # MIST_CLOUD_URL=https://api.mist.com
+   # MIST_CLOUD_TOKEN=your_mist_token
+   # ARISTA_CVP_URL=https://your-cvp.domain
+   # ARISTA_CVP_TOKEN=your_cvp_token
+   # FORTIMANAGER_URL=https://your-fortimanager.domain
+   # FORTIMANAGER_TOKEN=your_fortimanager_token
+   # PANORAMA_URL=https://your-panorama.domain
+   # PANORAMA_TOKEN=your_panorama_token
+   ```
+
+3. **Start NetBox Services**
    ```bash
    cd netbox
    docker-compose up -d
    ```
 
-3. **Start Orchestrator Services**
+4. **Start Orchestrator with Centralized API Management**
    ```bash
    cd ../example-orchestrator
    docker-compose up -d
    ```
 
-4. **Import Data from Devicetype Library**
+5. **Import Network Device Data**
    
-   **Option A: Web UI (Recommended)**
+   **Option A: Enhanced Web Dashboard (Recommended)**
    ```bash
-   # Open http://localhost:3000 in your browser
-   # Navigate to "Workflows" and run:
-   # - import_vendors (multi-vendor selection with direct NetBox integration)
+   # Open http://localhost:3000/dashboard.html in your browser
+   # Navigate to "Infrastructure Workflows" and run:
+   # - Import Vendors (import manufacturers)
+   # - Import Device Types (import device type definitions)
    ```
    
    **Option B: Command Line**
@@ -68,11 +111,67 @@ A comprehensive Proof of Concept (POC) demonstrating Intent-Based Networking (IB
    python3 device_type_import.py --limit 50  # Import device types
    ```
 
-5. **Access the Enhanced Applications**
-   - **Enhanced Dashboard**: http://localhost:3000/dashboard.html ⭐ **NEW**
-   - **Orchestrator UI**: http://localhost:3000 
-   - **NetBox DCIM**: http://localhost:8000
-   - **Orchestrator API**: http://localhost:8080
+6. **Access the Applications**
+   - **🎯 Enhanced Dashboard**: http://localhost:3000/dashboard.html ⭐ **NEW**
+   - **📋 Workflow Interface**: http://localhost:3000 
+   - **🔧 NetBox DCIM**: http://localhost:8000
+   - **🔌 Orchestrator API**: http://localhost:8080
+
+## 🔧 Centralized API Management Configuration
+
+### Environment Variables
+
+The system uses environment variables to configure API endpoints for different network platforms:
+
+```bash
+# Cisco Catalyst Center (DNA Center)
+CATALYST_CENTER_URL=https://your-catalyst-center.domain
+CATALYST_CENTER_TOKEN=your_api_token
+CATALYST_CENTER_USERNAME=admin
+CATALYST_CENTER_PASSWORD=your_password
+
+# Juniper Mist Cloud
+MIST_CLOUD_URL=https://api.mist.com
+MIST_CLOUD_TOKEN=your_mist_cloud_token
+MIST_ORG_ID=your_organization_id
+
+# Arista CloudVision Platform
+ARISTA_CVP_URL=https://your-cvp.domain
+ARISTA_CVP_TOKEN=your_cvp_token
+ARISTA_CVP_USERNAME=admin
+ARISTA_CVP_PASSWORD=your_password
+
+# Fortinet FortiManager
+FORTIMANAGER_URL=https://your-fortimanager.domain
+FORTIMANAGER_TOKEN=your_fortimanager_token
+FORTIMANAGER_USERNAME=admin
+FORTIMANAGER_PASSWORD=your_password
+
+# Palo Alto Panorama
+PANORAMA_URL=https://your-panorama.domain
+PANORAMA_TOKEN=your_panorama_api_key
+PANORAMA_USERNAME=admin
+PANORAMA_PASSWORD=your_password
+
+# NetBox Configuration
+NETBOX_URL=http://netbox:8000
+NETBOX_TOKEN=your_netbox_token
+
+# SSH Fallback Configuration
+DEFAULT_SSH_USERNAME=admin
+DEFAULT_SSH_PASSWORD=your_ssh_password
+SSH_TIMEOUT=30
+```
+
+### API Endpoint Priority
+
+The system automatically selects the optimal connection method based on device platform:
+
+1. **Platform-Specific API** (Preferred)
+2. **Direct SSH Connection** (Fallback)
+3. **Telnet Connection** (Last resort)
+
+This ensures maximum compatibility while optimizing for API-based management when available.
    - **API Documentation**: http://localhost:8080/api/docs
 
    **🎯 Recommended Starting Point**: Visit the **Enhanced Dashboard** for a complete overview of your system!
@@ -84,48 +183,17 @@ POC/
 ├── netbox/                     # NetBox IPAM/DCIM platform
 │   ├── docker-compose.yml     # NetBox container orchestration
 │   ├── configuration/         # NetBox configuration files
-│   ├── docker/                # Docker build files
-│   ├── test-configuration/    # Test environment configs
 │   └── ...
 ├── example-orchestrator/       # Custom orchestrator service
 │   ├── docker-compose.yml     # Orchestrator container setup
-│   ├── workflows/             # Automation workflows & tasks
-│   │   └── tasks/             # Individual workflow tasks
+│   ├── workflows/             # Automation workflows
 │   ├── products/              # Product definitions
-│   ├── services/              # Integration services
-│   ├── ansible/               # Ansible playbooks
-│   ├── clab/                  # Container Lab configs
-│   ├── migrations/            # Database migrations
-│   ├── templates/             # Jinja2 templates
-│   ├── translations/          # Internationalization
-│   └── utils/                 # Utility functions
+│   └── services/              # Integration services
 ├── devicetype-library/         # NetBox device type definitions
-│   ├── device-types/          # Device type YAML files (8000+)
+│   ├── device-types/          # Device type YAML files
 │   ├── module-types/          # Module type definitions
-│   ├── elevation-images/      # Device elevation images
-│   ├── module-images/         # Module images
-│   ├── schema/                # Validation schemas
-│   ├── scripts/               # Utility scripts
-│   └── tests/                 # Test suites
-├── docs/                      # 📚 Comprehensive Documentation
-│   ├── README.md              # Documentation index
-│   ├── HIGH_LEVEL_DESIGN.md   # System architecture overview
-│   ├── LOW_LEVEL_DESIGN.md    # Technical implementation details
-│   └── diagrams/              # System diagrams (Mermaid format)
-│       ├── 01_system_architecture_level1.md
-│       ├── 02_component_architecture_level2.md
-│       ├── 03_vendor_import_workflow.md
-│       ├── 04_data_flow_integration.md
-│       ├── 05_sequence_diagram_workflow.md
-│       └── 06_product_roadmap_kanban.md
-├── .env.example               # Environment configuration template
-├── docker-compose.dev.yml     # Development environment setup
-├── Makefile                   # Build and deployment commands
-├── CHANGELOG.md               # Version history
-├── CONTRIBUTING.md            # Contribution guidelines
-├── IMPORT_GUIDE.md            # Device import instructions
-├── UI_QUICKSTART.md           # Quick start for UI
-├── quickstart.sh              # Automated setup script
+│   └── schema/                # Validation schemas
+├── device_import.py           # Device type import script
 └── README.md                  # This file
 ```
 
@@ -170,47 +238,6 @@ POC/
 - **Content**: 8000+ device types from major vendors
 - **Format**: YAML with JSON schema validation
 - **Vendors**: Cisco, Juniper, Arista, HP, Dell, and many more
-
-### Documentation System
-- **Purpose**: Comprehensive system documentation
-- **Location**: `/docs` directory
-- **Formats**: Markdown with Mermaid diagrams
-- **Content**: Architecture designs, technical specifications, project roadmap
-- **Access**: Native GitHub rendering, no external dependencies
-
-## 📚 Documentation
-
-This project includes comprehensive documentation covering all aspects of the system:
-
-### 🎯 Quick Access
-- **[Documentation Hub](docs/README.md)** - Complete documentation index
-- **[High-Level Design](docs/HIGH_LEVEL_DESIGN.md)** - System architecture and business logic
-- **[Low-Level Design](docs/LOW_LEVEL_DESIGN.md)** - Technical implementation details
-
-### 📊 System Diagrams
-All diagrams use Mermaid format for native GitHub rendering:
-- **[System Architecture](docs/diagrams/01_system_architecture_level1.md)** - High-level system overview
-- **[Component Architecture](docs/diagrams/02_component_architecture_level2.md)** - Detailed component interactions
-- **[Vendor Import Workflow](docs/diagrams/03_vendor_import_workflow.md)** - Complete workflow process
-- **[Data Flow Integration](docs/diagrams/04_data_flow_integration.md)** - Data processing pipeline
-- **[Sequence Diagram](docs/diagrams/05_sequence_diagram_workflow.md)** - Execution timeline
-- **[Product Roadmap](docs/diagrams/06_product_roadmap_kanban.md)** - Development milestones
-
-## 🆕 Recent Updates
-
-### Version 2.0 Features
-- ✅ **Multi-Vendor Selection**: Choose specific vendors or select all for import
-- ✅ **Enhanced Workflow Engine**: Improved state management and error handling
-- ✅ **Direct NetBox Integration**: Streamlined vendor import without dry-run mode
-- ✅ **Comprehensive Documentation**: Complete system design and technical specifications
-- ✅ **Mermaid Diagrams**: Native GitHub-rendered diagrams (no external dependencies)
-- ✅ **Improved Error Handling**: Detailed logging and graceful failure recovery
-
-### Workflow Enhancements
-- **Unlimited Vendor Selection**: No restrictions on number of vendors to import
-- **Real-time Progress Tracking**: Monitor workflow execution status
-- **Comprehensive Logging**: Detailed audit trail for all operations
-- **Automatic Recovery**: Retry mechanisms for failed operations
 
 ## 🔧 Configuration
 
@@ -262,98 +289,94 @@ open http://localhost:3000
 - **System Status**: Monitor all services with live status indicators
 - **NetBox Statistics**: Real-time counts of manufacturers, device types, and devices  
 - **Quick Actions**: One-click access to common operations
-- **Workflow Categories**: Organized workflow navigation
+- **Centralized API Management**: Multi-vendor platform integration status
+- **Workflow Categories**: Organized workflow navigation with 13+ comprehensive workflows
 - **Auto-refresh**: Automatic updates every 30 seconds
 
-#### Workflow Categories
-1. **NetBox Integration**
-   - Device types import from community library
-   - Manufacturer management
-   - Data synchronization
+## 🔄 Comprehensive Workflow Categories
 
-2. **Network Operations**  
-   - L2VPN configuration
-   - Port management
-   - Link configuration
+### 1. **Infrastructure Management**
+   - **Vendor Import**: Import network device manufacturers from devicetype-library
+   - **Device Type Import**: Import device definitions with platform-specific details
+   - **NetBox Bootstrap**: Initialize NetBox with essential configuration
+   - **NetBox Data Management**: Clean up and manage NetBox data
 
-### 1. Vendor Import Workflow (Primary Feature)
+### 2. **Device Lifecycle Management** ⭐ **NEW**
+   - **Device Discovery**: Auto-discover devices via SNMP, LLDP, CDP with platform detection
+   - **Device Onboarding**: Complete device provisioning and NetBox integration
+   - **Bootstrap Configuration**: Apply day-0 configuration with site-aware templates
+   - **Device Health Check**: Comprehensive device validation and health assessment
+   - **Configuration Template Deployment**: Apply standardized configurations using templates
 
-3. **System Management**
-   - System health checks
-   - Backup procedures
-   - Administration tasks
+### 3. **Network Configuration Workflows** ⭐ **NEW**
+   - **BGP Configuration**: Configure Border Gateway Protocol with peer management
+   - **OSPF Configuration**: Configure Open Shortest Path First routing with area management
+   - **QoS Policy Configuration**: Implement Quality of Service policies with traffic shaping
+   - **VLAN Management**: Create, modify, and manage VLANs with dependency analysis
+   - **VLAN Deletion**: Safely remove VLANs with interface migration capabilities
+   - **Port Channel Configuration**: Configure link aggregation with load balancing
 
-4. **Infrastructure as Code (IAC)**
-   - Automated infrastructure provisioning
-   - Configuration management
+### 4. **Monitoring & Observability** ⭐ **NEW**
+   - **Network Monitoring Setup**: Deploy comprehensive monitoring with SNMP configuration
+   - **Performance Baseline Creation**: Establish network performance baselines
+   - **Alert Configuration**: Setup automated alerting with threshold management
 
-5. **Intent Based Networking**
-   - Intelligent network automation
-   - Policy-driven configuration
+### 5. **Multi-Vendor Operations** ⭐ **NEW**
+   - **Multi-Vendor Network Configuration**: Comprehensive workflow demonstrating centralized API management across:
+     - **Cisco Catalyst Center**: Enterprise DNA Center integration
+     - **Juniper Mist Cloud**: AI-driven network operations
+     - **Arista CloudVision**: Network workload orchestration  
+     - **Fortinet FortiManager**: Security-focused management
+     - **Palo Alto Panorama**: Unified firewall management
+     - **Direct SSH Fallback**: Universal device support
+
+### 6. **Infrastructure as Code (IaC)**
+   - **Automated Infrastructure Provisioning**: Template-driven infrastructure deployment
+   - **Configuration Drift Detection**: Monitor and remediate configuration changes
+   - **Policy Compliance Checking**: Automated compliance validation
+   - **Version-Controlled Configurations**: Git-based configuration management
+
+### 7. **Intent Based Networking**
+   - **Intelligent Network Automation**: AI-driven network optimization
+   - **Policy-Driven Configuration**: Intent-based policy enforcement
+   - **Network Intent Validation**: Automated intent verification and remediation
+
+## 🔧 Centralized API Management Features
+
+### Platform Integration Status
+- ✅ **Cisco Catalyst Center**: Full API integration with intelligent device management
+- ✅ **Juniper Mist Cloud**: AI-powered network operations integration  
+- ✅ **Arista CVP**: CloudVision Platform integration for data center networks
+- ✅ **Fortinet FortiManager**: Security-focused centralized management
+- ✅ **Palo Alto Panorama**: Unified firewall policy management
+- ✅ **Direct SSH Fallback**: Universal compatibility for any network device
+
+### Intelligent Connection Management
+- **NetBox IP Resolution**: Automatic device IP retrieval from IPAM
+- **Platform Detection**: Automatic device platform identification
+- **Optimal API Selection**: Intelligent selection of best connection method
+- **Fallback Mechanisms**: Automatic SSH fallback when APIs unavailable
+- **Connection Pooling**: Efficient resource management and connection reuse
+- **Concurrent Operations**: Parallel device operations for improved performance
 
 ### 1. NetBox Operations
->>>>>>> workflows
 
-#### Web UI Method (Recommended)
-```bash
-# 1. Open the orchestrator UI
-http://localhost:3000
-
-# 2. Navigate to Workflows section
-# 3. Select "Import Vendors" workflow
-# 4. Choose vendors to import:
-#    - Select specific vendors (Cisco, Arista, Juniper, etc.)
-#    - Or select "All" for complete import
-# 5. Submit workflow and monitor progress
-```
-
-#### API Method
-```bash
-curl -X POST http://localhost:8080/api/workflows/import-vendors \
-  -H "Content-Type: application/json" \
-  -d '{
-    "selected_vendors": ["Cisco", "Arista", "Juniper"],
-    "import_all": false
-  }'
-```
-
-#### Monitor Workflow Status
-```bash
-curl http://localhost:8080/api/workflows/{workflow_id}/status
-```
-
-### 2. NetBox Operations
-
-#### Access NetBox
-```bash
-# Web Interface
-http://localhost:8000
-
-# Default credentials
-Username: admin
-Password: admin
-```
-
-#### Create API Token
-1. Login to NetBox web interface
-2. Go to Admin → Users → API Tokens
-3. Create new token for orchestrator integration
-
-#### Python API Usage
+#### Create a Site
 ```python
 import pynetbox
 nb = pynetbox.api('http://localhost:8000', token='your-token')
-
-# List imported manufacturers
-manufacturers = nb.dcim.manufacturers.all()
-print(f"Imported {len(manufacturers)} manufacturers")
-
-# List imported device types
-device_types = nb.dcim.device_types.all()
-print(f"Imported {len(device_types)} device types")
+site = nb.dcim.sites.create(name='datacenter-01', slug='dc01')
 ```
 
-### 3. Advanced Orchestrator Features
+#### Add Devices
+```python
+device_type = nb.dcim.device_types.get(model='catalyst-9300-48p')
+device = nb.dcim.devices.create(
+    name='switch-01',
+    device_type=device_type.id,
+    site=site.id
+)
+```
 
 ### 2. Enhanced Orchestrator Workflows **NEW**
 
@@ -387,35 +410,30 @@ curl http://localhost:8080/api/workflows/categories
 curl http://localhost:8080/api/netbox/search?q=cisco
 ```
 
-#### Create Custom Workflow
+#### Create Node Workflow
 ```bash
-curl -X POST http://localhost:8080/api/workflows/custom \
+curl -X POST http://localhost:8080/api/workflows/node/create \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "provision-datacenter",
-    "steps": [
-      {"type": "create_site", "params": {"name": "DC01"}},
-      {"type": "import_devices", "params": {"vendor": "Cisco"}},
-      {"type": "configure_network", "params": {"template": "bgp-config"}}
-    ]
+    "name": "core-router-01",
+    "location": "datacenter-01",
+    "device_type": "cisco-asr-9000"
   }'
 ```
 
 #### GraphQL Query Example
 ```graphql
 query {
-  workflows {
+  nodes {
     id
     name
     status
-    created_at
-    steps {
+    ports {
       name
+      type
       status
-      duration
     }
   }
-}
 }
 ```
 
@@ -542,47 +560,25 @@ docker logs orchestrator | grep "api/dashboard"
 
 ## 🚀 Development
 
-### Branch Structure
-
-This repository uses a structured branching strategy:
-
-```
-main                           # Production-ready code
-├── netbox-feature-workflows   # Feature development branch
-└── documentation              # Comprehensive documentation branch
-```
-
-- **main**: Stable, production-ready code
-- **netbox-feature-workflows**: Active development of workflow features
-- **documentation**: Complete system documentation with Mermaid diagrams
-
 ### Setting Up Development Environment
 
 1. **Clone and Setup**
    ```bash
    git clone https://github.com/dashton956-alt/POC.git
    cd POC
-   
-   # Switch to development branch
-   git checkout netbox-feature-workflows
    ```
 
-2. **Environment Configuration**
+2. **Virtual Environment** (for device_import.py)
    ```bash
-   # Copy environment templates
-   cp .env.example .env
-   cp netbox/.env.example netbox/.env
-   cp example-orchestrator/.env.example example-orchestrator/.env
-   
-   # Edit configuration files as needed
+   python -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   # or
+   venv\Scripts\activate     # Windows
+   pip install -r requirements.txt
    ```
 
 3. **Development Containers**
    ```bash
-   # Start all services in development mode
-   docker-compose -f docker-compose.dev.yml up -d
-   
-   # Or start individually:
    # NetBox development mode
    cd netbox
    docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
@@ -592,72 +588,10 @@ main                           # Production-ready code
    docker-compose up -d
    ```
 
-4. **Python Development Setup** (for custom scripts)
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   # or
-   venv\Scripts\activate     # Windows
-   pip install -r requirements.txt
-   ```
-
-### Development Workflow
-
-```bash
-# 1. Create feature branch from development
-git checkout netbox-feature-workflows
-git pull origin netbox-feature-workflows
-git checkout -b feature/your-feature-name
-
-# 2. Make changes and test
-# 3. Commit with descriptive messages
-git add .
-git commit -m "feat: add new workflow capability"
-
-# 4. Push and create PR
-git push origin feature/your-feature-name
-# Create PR to netbox-feature-workflows branch
-```
-
-### Current Capabilities
-
-#### ✅ Implemented Features
-- **Multi-Vendor Device Import**: Select specific vendors or import all 8000+ device types
-- **NetBox Integration**: Direct creation of manufacturers, device types, and components
-- **Workflow Engine**: Asynchronous task processing with state management
-- **Error Handling**: Comprehensive logging and graceful failure recovery
-- **Web UI**: User-friendly interface for workflow management
-- **API Access**: RESTful and GraphQL endpoints
-- **Documentation**: Complete system architecture and technical specifications
-
-#### 🚧 In Development
-- **Performance Optimization**: Caching and parallel processing improvements
-- **Advanced Workflows**: Custom workflow builder and template system
-- **Monitoring Dashboard**: Real-time system health and performance metrics
-
-#### 📋 Roadmap
-- **Authentication & Authorization**: RBAC and enterprise authentication
-- **Multi-tenancy**: Organization isolation and resource management
-- **Mobile App**: iOS/Android applications for mobile management
-- **Advanced Reporting**: Custom reports and analytics
-- **Plugin System**: Third-party integrations and extensions
-
 ### Code Structure
 
-#### Orchestrator Components
-- **`workflows/`**: Workflow definitions and task implementations
-  - `tasks/import_vendors.py`: Multi-vendor import workflow
-  - `tasks/state_management.py`: Workflow state handling
-- **`services/`**: External service integrations
-  - `netbox.py`: NetBox API client and operations
-  - `git_client.py`: Git repository management
-- **`products/`**: Product and service definitions
-- **`utils/`**: Utility functions and helpers
-
 #### NetBox Integration
-- **`services/netbox.py`**: NetBox API client and authentication
-- **`workflows/tasks/import_vendors.py`**: Vendor import implementation
-- **Configuration**: Environment-based NetBox connection setup
+- `services/netbox.py`: NetBox API client
 - `products/services/netbox/`: NetBox-specific services
 - `device_import.py`: Device type import utility
 
@@ -764,53 +698,13 @@ python tests/definitions_test.py
 
 ## 🤝 Contributing
 
-We welcome contributions to improve the NetBox Orchestrator POC! Please see our [Contributing Guidelines](CONTRIBUTING.md) for detailed information.
+### Development Workflow
+1. Fork the repository
+2. Create a feature branch
+3. Make changes with appropriate tests
+4. Submit a pull request
 
-### Quick Contribution Steps
-1. **Fork the repository** and clone your fork
-2. **Create a feature branch** from `netbox-feature-workflows`
-   ```bash
-   git checkout netbox-feature-workflows
-   git checkout -b feature/your-feature-name
-   ```
-3. **Make your changes** with appropriate tests
-4. **Follow code standards**: Python PEP 8, descriptive commit messages
-5. **Update documentation** if adding new features
-6. **Submit a pull request** to the `netbox-feature-workflows` branch
-
-### Development Guidelines
-- **Code Quality**: Follow Python PEP 8 and include docstrings
-- **Testing**: Add unit tests for new functionality
-- **Documentation**: Update relevant documentation files
-- **Commit Messages**: Use conventional commit format (feat:, fix:, docs:, etc.)
-
-### Areas for Contribution
-- 🔧 **Core Features**: Workflow engine improvements
-- 📊 **UI/UX**: Frontend enhancements and user experience
-- 🧪 **Testing**: Test coverage expansion and automation
-- 📚 **Documentation**: Technical writing and tutorials
-- 🐛 **Bug Fixes**: Issue resolution and stability improvements
-
-## 📞 Support & Community
-
-### Getting Help
-- **Documentation**: Start with the [docs/](docs/) directory
-- **Issues**: Report bugs or request features via GitHub Issues
-- **Discussions**: Use GitHub Discussions for questions and community support
-
-### Resources
-- **[High-Level Design](docs/HIGH_LEVEL_DESIGN.md)**: System architecture overview
-- **[Low-Level Design](docs/LOW_LEVEL_DESIGN.md)**: Technical implementation details
-- **[Import Guide](IMPORT_GUIDE.md)**: Device import procedures
-- **[Quick Start Guide](UI_QUICKSTART.md)**: Getting started with the UI
-- **[Changelog](CHANGELOG.md)**: Version history and updates
-
-### Project Status
-- **Current Version**: 2.0 (Multi-vendor workflow capability)
-- **Development Branch**: `netbox-feature-workflows`
-- **Documentation Branch**: `documentation`
-- **Active Maintenance**: Regular updates and bug fixes
-- **Community**: Growing contributor base
+### Code Standards
 - Python: PEP 8 compliance
 - Documentation: Docstrings for all functions
 - Testing: Minimum 80% code coverage
