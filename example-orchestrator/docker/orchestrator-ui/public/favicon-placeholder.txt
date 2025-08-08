@@ -1,0 +1,2 @@
+# This is a placeholder for favicon.png
+# The actual favicon should be a PNG file
