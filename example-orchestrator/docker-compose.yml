@@ -86,6 +86,7 @@ services:
       - ./graphql_federation.py:/home/orchestrator/graphql_federation.py
       - ./utils:/home/orchestrator/utils
       - ./services:/home/orchestrator/services
+      - ./static:/home/orchestrator/static
       - ./requirements.txt:/home/orchestrator/requirements.txt
       - ./alembic.ini:/home/orchestrator/alembic.ini
       - ./translations:/home/orchestrator/translations
