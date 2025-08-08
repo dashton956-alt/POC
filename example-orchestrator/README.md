@@ -1,12 +1,37 @@
-# Example Workflow Orchestrator
+# Intent Based Orchestrator - Enhanced Edition
 
-Example workflow orchestrator implementation based on the
+Enhanced workflow orchestrator implementation with modern web interface, based on the
 [orchestrator-core](https://workfloworchestrator.org/orchestrator-core/) framework.
 
+## ✨ Enhanced Features
+
+### 🎨 Professional Web Dashboard  
+- **Modern Interface**: Comprehensive dashboard with real-time monitoring
+- **System Status**: Live status indicators for all services with pulse animations
+- **NetBox Integration**: Direct integration showing live statistics
+- **Workflow Management**: Organized categories with enhanced navigation
+- **Auto-refresh**: Real-time updates every 30 seconds
+- **Responsive Design**: Mobile-friendly with professional CSS styling
+
+### 🔧 Enhanced Workflow Categories
+1. **NetBox Integration**: Device types, manufacturers, data synchronization  
+2. **Network Operations**: L2VPN configuration, port management, link setup
+3. **System Management**: Health checks, backup, system administration
+4. **Infrastructure as Code (IAC)**: Automated infrastructure provisioning ⭐ **NEW**
+5. **Intent Based Networking**: Intelligent automation and policy-driven config ⭐ **NEW**
+
+### 📊 Enhanced APIs
+- Dashboard data endpoints with real-time statistics
+- NetBox integration APIs with advanced search
+- System health monitoring endpoints
+- Workflow category management
+- Enhanced error handling and fallbacks
+
 - [Example Workflow Orchestrator](#example-workflow-orchestrator)
+  - [Enhanced Features](#enhanced-features)
   - [Quickstart](#quickstart)
     - [Start application](#start-application)
-    - [Using the example orchestrator](#using-the-example-orchestrator)
+    - [Using the enhanced orchestrator](#using-the-enhanced-orchestrator)
   - [Summary](#summary)
   - [Introduction](#introduction)
   - [Example orchestrator](#example-orchestrator)

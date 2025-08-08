@@ -1,0 +1,127 @@
+---
+- name: Configure OSPF Process
+  hosts: "{{ device_ip }}"
+  gather_facts: false
+  vars:
+    device_platform: "{{ device_platform }}"
+    ospf_process_id: "{{ ospf_process_id }}"
+    router_id: "{{ router_id }}"
+    reference_bandwidth: "{{ reference_bandwidth | default(100000) }}"
+    max_lsa_count: "{{ max_lsa_count | default(12000) }}"
+    default_route_advertisement: "{{ default_route_advertisement | default('none') }}"
+    enable_area_summarization: "{{ enable_area_summarization | default(true) }}"
+    
+  tasks:
+    - name: Set connection parameters
+      set_fact:
+        ansible_connection: network_cli
+        ansible_network_os: "{{ device_platform }}"
+        
+    - name: Configure OSPF process for Cisco IOS/IOS-XE
+      ios_config:
+        lines:
+          - "router-id {{ router_id }}"
+          - "auto-cost reference-bandwidth {{ reference_bandwidth }}"
+          - "max-lsa {{ max_lsa_count }}"
+          - "{% if default_route_advertisement == 'always' %}default-information originate always{% elif default_route_advertisement == 'conditional' %}default-information originate{% endif %}"
+          - "{% if enable_area_summarization %}area-range{% endif %}"
+        parents: "router ospf {{ ospf_process_id }}"
+      when: device_platform in ['ios', 'ios-xe']
+      register: ospf_config_ios
+      
+    - name: Configure OSPF process for Arista EOS
+      eos_config:
+        lines:
+          - "router-id {{ router_id }}"
+          - "auto-cost reference-bandwidth {{ reference_bandwidth }}"
+          - "max-lsa {{ max_lsa_count }}"
+          - "{% if default_route_advertisement == 'always' %}default-information originate always{% elif default_route_advertisement == 'conditional' %}default-information originate{% endif %}"
+        parents: "router ospf {{ ospf_process_id }}"
+      when: device_platform == 'eos'
+      register: ospf_config_eos
+      
+    - name: Configure OSPF process for Cisco NX-OS
+      nxos_config:
+        lines:
+          - "router-id {{ router_id }}"
+          - "auto-cost reference-bandwidth {{ reference_bandwidth }} Mbps"
+          - "{% if default_route_advertisement == 'always' %}default-information originate always{% elif default_route_advertisement == 'conditional' %}default-information originate{% endif %}"
+        parents: "router ospf {{ ospf_process_id }}"
+      when: device_platform == 'nxos'
+      register: ospf_config_nxos
+      
+    - name: Configure OSPF process for Juniper JunOS
+      junos_config:
+        lines:
+          - "protocols {"
+          - "    ospf {"
+          - "        area 0.0.0.0 {"
+          - "            interface lo0.0"
+          - "        }"
+          - "        reference-bandwidth {{ reference_bandwidth }}m"
+          - "        {% if default_route_advertisement == 'always' %}export default-route{% endif %}"
+          - "    }"
+          - "}"
+          - "routing-options {"
+          - "    router-id {{ router_id }}"
+          - "}"
+      when: device_platform == 'junos'
+      register: ospf_config_junos
+      
+    - name: Verify OSPF process started
+      block:
+        - name: Check OSPF process (Cisco IOS/IOS-XE)
+          ios_command:
+            commands:
+              - "show ip ospf {{ ospf_process_id }}"
+          register: ospf_verify_ios
+          when: device_platform in ['ios', 'ios-xe']
+          
+        - name: Check OSPF process (Arista EOS)
+          eos_command:
+            commands:
+              - "show ip ospf {{ ospf_process_id }}"
+          register: ospf_verify_eos
+          when: device_platform == 'eos'
+          
+        - name: Check OSPF process (Cisco NX-OS)
+          nxos_command:
+            commands:
+              - "show ip ospf {{ ospf_process_id }}"
+          register: ospf_verify_nxos
+          when: device_platform == 'nxos'
+          
+        - name: Check OSPF process (Juniper JunOS)
+          junos_command:
+            commands:
+              - "show ospf overview"
+          register: ospf_verify_junos
+          when: device_platform == 'junos'
+          
+    - name: Set success result
+      set_fact:
+        result:
+          success: true
+          router_id_configured: "{{ router_id }}"
+          process_started: true
+          reference_bandwidth_set: "{{ reference_bandwidth }}"
+          max_lsa_configured: "{{ max_lsa_count }}"
+          default_route_policy: "{{ default_route_advertisement }}"
+          timestamp: "{{ ansible_date_time.iso8601 }}"
+          verification_output: "{{ ospf_verify_ios.stdout[0] if ospf_verify_ios is defined else ospf_verify_eos.stdout[0] if ospf_verify_eos is defined else ospf_verify_nxos.stdout[0] if ospf_verify_nxos is defined else ospf_verify_junos.stdout[0] if ospf_verify_junos is defined else 'No verification performed' }}"
+          
+    - name: Display result
+      debug:
+        var: result
+        
+  rescue:
+    - name: Set failure result
+      set_fact:
+        result:
+          success: false
+          error: "{{ ansible_failed_result.msg }}"
+          timestamp: "{{ ansible_date_time.iso8601 }}"
+          
+    - name: Display failure result
+      debug:
+        var: result

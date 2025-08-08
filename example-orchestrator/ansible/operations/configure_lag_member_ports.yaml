@@ -1,0 +1,109 @@
+---
+- name: Configure LAG Member Ports
+  hosts: "{{ device_ip }}"
+  gather_facts: false
+  vars:
+    device_platform: "{{ device_platform }}"
+    member_ports: "{{ member_ports }}"
+    portchannel_id: "{{ portchannel_id }}"
+    lag_protocol: "{{ lag_protocol }}"
+    lacp_mode: "{{ lacp_mode | default('active') }}"
+    lacp_timeout: "{{ lacp_timeout | default('long') }}"
+    speed: "{{ speed | default('auto') }}"
+    
+  tasks:
+    - name: Set connection parameters
+      set_fact:
+        ansible_connection: network_cli
+        ansible_network_os: "{{ device_platform }}"
+        
+    - name: Configure member ports for Cisco IOS/IOS-XE
+      ios_config:
+        lines:
+          - "description Member of Port-channel{{ portchannel_id }}"
+          - "no shutdown"
+          - "{% if speed != 'auto' %}speed {{ speed }}{% endif %}"
+          - "{% if lag_protocol == 'lacp' %}channel-protocol lacp{% endif %}"
+          - "{% if lag_protocol == 'pagp' %}channel-protocol pagp{% endif %}"
+          - "channel-group {{ portchannel_id }} mode {% if lag_protocol == 'lacp' %}{{ lacp_mode }}{% elif lag_protocol == 'pagp' %}{{ lacp_mode }}{% else %}on{% endif %}"
+          - "{% if lag_protocol == 'lacp' and lacp_timeout == 'short' %}lacp timeout short{% endif %}"
+        parents: "interface {{ item.port_name }}"
+      loop: "{{ member_ports }}"
+      when: device_platform in ['ios', 'ios-xe']
+      register: ios_config_result
+      
+    - name: Configure member ports for Arista EOS
+      eos_config:
+        lines:
+          - "description Member of Port-channel{{ portchannel_id }}"
+          - "no shutdown"
+          - "{% if speed != 'auto' %}speed forced {{ speed }}Mbps{% endif %}"
+          - "channel-group {{ portchannel_id }} mode {% if lag_protocol == 'lacp' %}{{ lacp_mode }}{% else %}on{% endif %}"
+          - "{% if lag_protocol == 'lacp' %}lacp mode {{ lacp_mode }}{% endif %}"
+          - "{% if lag_protocol == 'lacp' and lacp_timeout == 'short' %}lacp timeout short{% endif %}"
+        parents: "interface {{ item.port_name }}"
+      loop: "{{ member_ports }}"
+      when: device_platform == 'eos'
+      register: eos_config_result
+      
+    - name: Configure member ports for Cisco NX-OS
+      nxos_config:
+        lines:
+          - "description Member of Port-channel{{ portchannel_id }}"
+          - "no shutdown"
+          - "{% if speed != 'auto' %}speed {{ speed }}{% endif %}"
+          - "channel-group {{ portchannel_id }}"
+        parents: "interface {{ item.port_name }}"
+      loop: "{{ member_ports }}"
+      when: device_platform == 'nxos'
+      register: nxos_config_result
+      
+    - name: Configure member ports for Juniper JunOS
+      junos_config:
+        lines:
+          - "description \"Member of ae{{ portchannel_id }}\""
+          - "{% if speed != 'auto' %}speed {{ speed }}m{% endif %}"
+          - "ether-options {"
+          - "  802.3ad ae{{ portchannel_id }}"
+          - "}"
+        parents: "interfaces {{ item.port_name }}"
+      loop: "{{ member_ports }}"
+      when: device_platform == 'junos'
+      register: junos_config_result
+      
+    - name: Set configuration results
+      set_fact:
+        port_results: {}
+        
+    - name: Process results for each port
+      set_fact:
+        port_results: "{{ port_results | combine({item.port_name: {'configured': true, 'changes': (config_result.commands | default([]) | length)}}) }}"
+      loop: "{{ member_ports }}"
+      vars:
+        config_result: "{{ ios_config_result if device_platform in ['ios', 'ios-xe'] else eos_config_result if device_platform == 'eos' else nxos_config_result if device_platform == 'nxos' else junos_config_result }}"
+      when: config_result is defined
+      
+    - name: Set success result
+      set_fact:
+        result:
+          success: true
+          port_results: "{{ port_results }}"
+          total_ports_configured: "{{ member_ports | length }}"
+          protocol_used: "{{ lag_protocol }}"
+          timestamp: "{{ ansible_date_time.iso8601 }}"
+          
+    - name: Display result
+      debug:
+        var: result
+        
+  rescue:
+    - name: Set failure result
+      set_fact:
+        result:
+          success: false
+          error: "{{ ansible_failed_result.msg }}"
+          timestamp: "{{ ansible_date_time.iso8601 }}"
+          
+    - name: Display failure result
+      debug:
+        var: result

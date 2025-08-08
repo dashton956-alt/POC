@@ -1,0 +1,181 @@
+---
+# Device Discovery Playbook
+# Auto-discover network devices using multiple methods
+name: Network Device Discovery
+hosts: localhost
+gather_facts: false
+vars:
+  target_network: "{{ target_network | default('192.168.1.0/24') }}"
+  discovery_method: "{{ discovery_method | default('snmp') }}"
+  snmp_community: "{{ snmp_community | default('public') }}"
+  discovery_timeout: "{{ discovery_timeout | default(60) }}"
+
+tasks:
+  - name: Create discovery results directory
+    file:
+      path: /tmp/discovery_results
+      state: directory
+    delegate_to: localhost
+
+  - name: SNMP Discovery Scan
+    block:
+      - name: Perform SNMP discovery scan
+        shell: |
+          nmap -sn {{ target_network }} | grep -E "Nmap scan report|MAC Address" | 
+          awk '/Nmap scan report/{ip=$NF; gsub(/[()]/,"",ip)} 
+               /MAC Address/{mac=$3; print ip","mac}' > /tmp/discovery_results/hosts.csv
+        delegate_to: localhost
+        
+      - name: Query SNMP information for discovered hosts
+        snmp_facts:
+          host: "{{ item.split(',')[0] }}"
+          community: "{{ snmp_community }}"
+          version: v2c
+          timeout: 10
+        register: snmp_results
+        ignore_errors: true
+        loop: "{{ lookup('file', '/tmp/discovery_results/hosts.csv').splitlines() }}"
+        when: item.split(',')[0] != ""
+        
+      - name: Process SNMP results
+        set_fact:
+          discovered_devices: "{{ discovered_devices | default([]) + [device_info] }}"
+        vars:
+          device_info:
+            ip_address: "{{ item.item.split(',')[0] }}"
+            mac_address: "{{ item.item.split(',')[1] if item.item.split(',') | length > 1 else 'unknown' }}"
+            hostname: "{{ item.ansible_facts.ansible_sysdescr.split()[0] if item.ansible_facts is defined else 'unknown' }}"
+            device_type: "{{ item.ansible_facts.ansible_sysdescr if item.ansible_facts is defined else 'unknown' }}"
+            snmp_sysname: "{{ item.ansible_facts.ansible_sysname if item.ansible_facts is defined else 'unknown' }}"
+            os_version: "{{ item.ansible_facts.ansible_sysdescr.split()[-1] if item.ansible_facts is defined else 'unknown' }}"
+            discovery_method: "snmp"
+        loop: "{{ snmp_results.results }}"
+        when: item is not failed
+    when: discovery_method == "snmp"
+
+  - name: LLDP Discovery Scan
+    block:
+      - name: Install lldpd for discovery
+        package:
+          name: lldpd
+          state: present
+        delegate_to: localhost
+        
+      - name: Start LLDP daemon
+        service:
+          name: lldpd
+          state: started
+        delegate_to: localhost
+        
+      - name: Wait for LLDP neighbors
+        wait_for:
+          timeout: 30
+        delegate_to: localhost
+        
+      - name: Get LLDP neighbors
+        shell: lldpcli show neighbors -f json
+        register: lldp_output
+        delegate_to: localhost
+        
+      - name: Process LLDP results
+        set_fact:
+          discovered_devices: "{{ (lldp_output.stdout | from_json).lldp.interface | 
+                                  map('extract_lldp_info') | list }}"
+        vars:
+          extract_lldp_info: |
+            {
+              'ip_address': item.chassis.mgmt_ip[0].value if item.chassis.mgmt_ip is defined else 'unknown',
+              'hostname': item.chassis.name[0].value if item.chassis.name is defined else 'unknown', 
+              'mac_address': item.chassis.id[0].value if item.chassis.id is defined else 'unknown',
+              'device_type': item.chassis.descr[0].value if item.chassis.descr is defined else 'unknown',
+              'discovery_method': 'lldp'
+            }
+    when: discovery_method == "lldp"
+
+  - name: Ping Sweep + SNMP Discovery
+    block:
+      - name: Perform ping sweep
+        shell: |
+          nmap -sn {{ target_network }} | grep "Nmap scan report" | 
+          awk '{print $5}' | grep -E "^([0-9]{1,3}\.){3}[0-9]{1,3}$" > /tmp/discovery_results/live_hosts.txt
+        delegate_to: localhost
+        
+      - name: SNMP query live hosts
+        snmp_facts:
+          host: "{{ item }}"
+          community: "{{ snmp_community }}"
+          version: v2c
+          timeout: 5
+        register: ping_snmp_results
+        ignore_errors: true
+        loop: "{{ lookup('file', '/tmp/discovery_results/live_hosts.txt').splitlines() }}"
+        
+      - name: Process ping + SNMP results
+        set_fact:
+          discovered_devices: "{{ discovered_devices | default([]) + [device_info] }}"
+        vars:
+          device_info:
+            ip_address: "{{ item.item }}"
+            hostname: "{{ item.ansible_facts.ansible_sysname if item.ansible_facts is defined else item.item }}"
+            device_type: "{{ item.ansible_facts.ansible_sysdescr if item.ansible_facts is defined else 'unknown' }}"
+            os_version: "{{ item.ansible_facts.ansible_sysdescr.split()[-1] if item.ansible_facts is defined else 'unknown' }}"
+            discovery_method: "ping_sweep"
+        loop: "{{ ping_snmp_results.results }}"
+        when: item is not failed
+    when: discovery_method == "ping_sweep"
+
+  - name: Network Map (Nmap) Discovery
+    block:
+      - name: Perform comprehensive nmap scan
+        shell: |
+          nmap -sS -O -sV {{ target_network }} --open --max-hostgroup 100 -oX /tmp/discovery_results/nmap_scan.xml
+        delegate_to: localhost
+        timeout: "{{ discovery_timeout }}"
+        
+      - name: Parse nmap XML results
+        xml:
+          path: /tmp/discovery_results/nmap_scan.xml
+          xpath: //host[status/@state='up']
+          content: attribute
+        register: nmap_hosts
+        
+      - name: Process nmap results
+        set_fact:
+          discovered_devices: "{{ discovered_devices | default([]) + [device_info] }}"
+        vars:
+          device_info:
+            ip_address: "{{ item.address.addr }}"
+            hostname: "{{ item.hostnames.hostname.name if item.hostnames is defined else item.address.addr }}"
+            device_type: "{{ item.os.osmatch.name if item.os is defined else 'unknown' }}"
+            ports_open: "{{ item.ports.port | length if item.ports is defined else 0 }}"
+            discovery_method: "nmap"
+        loop: "{{ nmap_hosts.matches }}"
+    when: discovery_method == "nmap"
+
+  - name: Save discovery results
+    copy:
+      content: "{{ discovered_devices | to_nice_json }}"
+      dest: /tmp/discovery_results/discovered_devices.json
+    delegate_to: localhost
+
+  - name: Display discovery summary
+    debug:
+      msg: |
+        Discovery completed using {{ discovery_method }} method
+        Target network: {{ target_network }}
+        Devices discovered: {{ discovered_devices | length if discovered_devices is defined else 0 }}
+        Results saved to: /tmp/discovery_results/discovered_devices.json
+
+  - name: Send results to orchestrator
+    uri:
+      url: "{{ callback_route }}"
+      method: POST
+      body_format: json
+      body:
+        status: "completed"
+        discovery_method: "{{ discovery_method }}"
+        target_network: "{{ target_network }}"
+        devices_found: "{{ discovered_devices | length if discovered_devices is defined else 0 }}"
+        discovered_devices: "{{ discovered_devices | default([]) }}"
+    delegate_to: localhost
+    when: callback_route is defined

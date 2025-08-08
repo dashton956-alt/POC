@@ -1,0 +1,368 @@
+---
+# Device Health Check Playbook
+# Comprehensive device health assessment
+name: Device Health Check
+hosts: all
+gather_facts: false
+vars:
+  check_types: "{{ check_types | default(['hardware', 'software', 'interfaces']) }}"
+
+tasks:
+  - name: Initialize health check results
+    set_fact:
+      health_result:
+        device: "{{ inventory_hostname }}"
+        timestamp: "{{ ansible_date_time.iso8601 }}"
+        checks_performed: "{{ check_types }}"
+        overall_status: "unknown"
+        hardware_status: "not_checked"
+        software_status: "not_checked"
+        interface_status: "not_checked"
+        protocol_status: "not_checked"
+        performance_status: "not_checked"
+        security_status: "not_checked"
+        configuration_status: "not_checked"
+        issues: []
+        recommendations: []
+
+  - name: Detect device platform
+    snmp_facts:
+      host: "{{ inventory_hostname }}"
+      community: "{{ snmp_community | default('public') }}"
+      version: v2c
+    register: device_info
+    delegate_to: localhost
+    ignore_errors: true
+
+  - name: Set device platform
+    set_fact:
+      device_platform: "{{ 'cisco_ios' if 'cisco' in device_info.ansible_facts.ansible_sysdescr.lower() else 
+                           'juniper_junos' if 'juniper' in device_info.ansible_facts.ansible_sysdescr.lower() else 
+                           'arista_eos' if 'arista' in device_info.ansible_facts.ansible_sysdescr.lower() else 'generic' }}"
+    when: device_info is not failed
+
+  # HARDWARE HEALTH CHECKS
+  - name: Hardware Health Check - Cisco
+    block:
+      - name: Gather Cisco hardware facts
+        ios_facts:
+          gather_subset: hardware
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+        register: cisco_hardware
+
+      - name: Check Cisco hardware status
+        set_fact:
+          health_result: "{{ health_result | combine({
+            'hardware_status': 'ok' if cisco_hardware.ansible_facts.ansible_net_memfree_mb > 100 else 'warning'
+          }) }}"
+
+      - name: Add hardware issues (Cisco)
+        set_fact:
+          health_result: "{{ health_result | combine({
+            'issues': health_result.issues + [{
+              'type': 'hardware',
+              'severity': 'warning',
+              'description': 'Low memory available',
+              'value': cisco_hardware.ansible_facts.ansible_net_memfree_mb,
+              'auto_fixable': false
+            }]
+          }) }}"
+        when: cisco_hardware.ansible_facts.ansible_net_memfree_mb < 100
+    when: "'hardware' in check_types and device_platform == 'cisco_ios'"
+    ignore_errors: true
+
+  - name: Hardware Health Check - Juniper  
+    block:
+      - name: Gather Juniper hardware facts
+        junos_facts:
+          gather_subset: hardware
+        vars:
+          ansible_connection: netconf
+          ansible_network_os: junos
+        register: juniper_hardware
+
+      - name: Check Juniper hardware status
+        set_fact:
+          health_result: "{{ health_result | combine({
+            'hardware_status': 'ok'
+          }) }}"
+    when: "'hardware' in check_types and device_platform == 'juniper_junos'"
+    ignore_errors: true
+
+  # SOFTWARE HEALTH CHECKS
+  - name: Software Health Check - Cisco
+    block:
+      - name: Get Cisco software version
+        ios_command:
+          commands:
+            - show version
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+        register: cisco_version
+
+      - name: Analyze software status
+        set_fact:
+          health_result: "{{ health_result | combine({
+            'software_status': 'ok',
+            'software_version': cisco_version.stdout[0] | regex_search('Version ([^,]+)') 
+          }) }}"
+
+      - name: Check for known vulnerable versions
+        set_fact:
+          health_result: "{{ health_result | combine({
+            'software_status': 'warning',
+            'issues': health_result.issues + [{
+              'type': 'software', 
+              'severity': 'medium',
+              'description': 'Software version may have known vulnerabilities',
+              'auto_fixable': false
+            }]
+          }) }}"
+        when: "'15.0' in cisco_version.stdout[0] or '12.4' in cisco_version.stdout[0]"
+    when: "'software' in check_types and device_platform == 'cisco_ios'"
+    ignore_errors: true
+
+  # INTERFACE HEALTH CHECKS
+  - name: Interface Health Check - Cisco
+    block:
+      - name: Get interface status
+        ios_command:
+          commands:
+            - show interface brief
+            - show interface status
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+        register: cisco_interfaces
+
+      - name: Analyze interface status
+        set_fact:
+          interface_issues: []
+          
+      - name: Check for down interfaces
+        set_fact:
+          interface_issues: "{{ interface_issues + ['Interface ' + item + ' is down'] }}"
+        when: "'down' in item.lower()"
+        loop: "{{ cisco_interfaces.stdout[0].split('\n')[1:] }}"
+
+      - name: Update interface status
+        set_fact:
+          health_result: "{{ health_result | combine({
+            'interface_status': 'warning' if interface_issues | length > 0 else 'ok',
+            'issues': health_result.issues + interface_issues | map('interface_issue_format') | list
+          }) }}"
+        vars:
+          interface_issue_format: |
+            {
+              'type': 'interface',
+              'severity': 'low',
+              'description': item,
+              'auto_fixable': true
+            }
+    when: "'interfaces' in check_types and device_platform == 'cisco_ios'"
+    ignore_errors: true
+
+  # PROTOCOL HEALTH CHECKS
+  - name: Protocol Health Check - Cisco
+    block:
+      - name: Check routing protocols
+        ios_command:
+          commands:
+            - show ip protocols
+            - show ip route summary
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+        register: cisco_protocols
+
+      - name: Analyze protocol status
+        set_fact:
+          health_result: "{{ health_result | combine({
+            'protocol_status': 'ok'
+          }) }}"
+    when: "'protocols' in check_types and device_platform == 'cisco_ios'"
+    ignore_errors: true
+
+  # PERFORMANCE HEALTH CHECKS
+  - name: Performance Health Check
+    block:
+      - name: Get CPU utilization
+        ios_command:
+          commands:
+            - show processes cpu
+          wait_for:
+            - result[0] contains "CPU utilization"
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+        register: cpu_info
+
+      - name: Extract CPU usage
+        set_fact:
+          cpu_usage: "{{ cpu_info.stdout[0] | regex_search('\\d+%') | regex_replace('%', '') | int }}"
+
+      - name: Analyze performance status
+        set_fact:
+          health_result: "{{ health_result | combine({
+            'performance_status': 'critical' if cpu_usage > 80 else ('warning' if cpu_usage > 60 else 'ok'),
+            'cpu_utilization': cpu_usage
+          }) }}"
+
+      - name: Add performance issues
+        set_fact:
+          health_result: "{{ health_result | combine({
+            'issues': health_result.issues + [{
+              'type': 'performance',
+              'severity': 'high' if cpu_usage > 80 else 'medium',
+              'description': 'High CPU utilization detected',
+              'value': cpu_usage,
+              'auto_fixable': false
+            }]
+          }) }}"
+        when: cpu_usage > 60
+    when: "'performance' in check_types and device_platform == 'cisco_ios'"
+    ignore_errors: true
+
+  # SECURITY HEALTH CHECKS
+  - name: Security Health Check - Cisco
+    block:
+      - name: Check security configuration
+        ios_command:
+          commands:
+            - show running-config | include username
+            - show running-config | include enable secret
+            - show running-config | include access-list
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+        register: security_config
+
+      - name: Analyze security posture
+        set_fact:
+          security_issues: []
+
+      - name: Check for default passwords
+        set_fact:
+          security_issues: "{{ security_issues + ['Potential default or weak passwords detected'] }}"
+        when: "'admin' in security_config.stdout[0] or 'password' in security_config.stdout[0]"
+
+      - name: Check for missing access lists
+        set_fact:
+          security_issues: "{{ security_issues + ['No access control lists configured'] }}"
+        when: "security_config.stdout[2] == ''"
+
+      - name: Update security status
+        set_fact:
+          health_result: "{{ health_result | combine({
+            'security_status': 'warning' if security_issues | length > 0 else 'ok',
+            'issues': health_result.issues + security_issues | map('security_issue_format') | list
+          }) }}"
+        vars:
+          security_issue_format: |
+            {
+              'type': 'security',
+              'severity': 'medium',
+              'description': item,
+              'auto_fixable': false
+            }
+    when: "'security' in check_types and device_platform == 'cisco_ios'"
+    ignore_errors: true
+
+  # CONFIGURATION COMPLIANCE CHECKS
+  - name: Configuration Compliance Check
+    block:
+      - name: Get running configuration
+        ios_command:
+          commands:
+            - show running-config
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+        register: running_config
+
+      - name: Check configuration compliance
+        set_fact:
+          config_issues: []
+
+      - name: Check for required configurations
+        set_fact:
+          config_issues: "{{ config_issues + ['Missing logging configuration'] }}"
+        when: "'logging' not in running_config.stdout[0]"
+
+      - name: Update configuration status
+        set_fact:
+          health_result: "{{ health_result | combine({
+            'configuration_status': 'warning' if config_issues | length > 0 else 'ok',
+            'issues': health_result.issues + config_issues | map('config_issue_format') | list
+          }) }}"
+        vars:
+          config_issue_format: |
+            {
+              'type': 'configuration',
+              'severity': 'low',
+              'description': item,
+              'auto_fixable': true
+            }
+    when: "'configuration' in check_types and device_platform == 'cisco_ios'"
+    ignore_errors: true
+
+  # DETERMINE OVERALL HEALTH STATUS
+  - name: Calculate overall health status
+    set_fact:
+      health_result: "{{ health_result | combine({
+        'overall_status': overall_health
+      }) }}"
+    vars:
+      critical_count: "{{ health_result.issues | selectattr('severity', 'equalto', 'critical') | list | length }}"
+      high_count: "{{ health_result.issues | selectattr('severity', 'equalto', 'high') | list | length }}"
+      medium_count: "{{ health_result.issues | selectattr('severity', 'equalto', 'medium') | list | length }}"
+      overall_health: "{{ 'critical' if (critical_count | int) > 0 else 
+                         'warning' if (high_count | int + medium_count | int) > 0 else 'healthy' }}"
+
+  # GENERATE RECOMMENDATIONS
+  - name: Generate recommendations
+    set_fact:
+      health_result: "{{ health_result | combine({
+        'recommendations': recommendations
+      }) }}"
+    vars:
+      recommendations: "{{ health_result.issues | map('generate_recommendation') | list }}"
+      generate_recommendation: |
+        {% if item.type == 'hardware' %}
+        "Consider hardware upgrade or optimization"
+        {% elif item.type == 'software' %}
+        "Schedule software update to latest stable version"
+        {% elif item.type == 'interface' %}
+        "Investigate interface connectivity and configuration"
+        {% elif item.type == 'performance' %}
+        "Investigate high resource utilization"
+        {% elif item.type == 'security' %}
+        "Review and update security configuration"
+        {% elif item.type == 'configuration' %}
+        "Update configuration to meet compliance standards"
+        {% else %}
+        "Review device configuration"
+        {% endif %}
+
+  - name: Send health check results to orchestrator
+    uri:
+      url: "{{ callback_route }}"
+      method: POST
+      body_format: json
+      body:
+        device: "{{ inventory_hostname }}"
+        health_result: "{{ health_result }}"
+        status: "completed"
+    delegate_to: localhost
+    when: callback_route is defined
+
+  - name: Display health check summary
+    debug:
+      msg: |
+        Health check completed for {{ inventory_hostname }}
+        Overall Status: {{ health_result.overall_status }}
+        Issues Found: {{ health_result.issues | length }}
+        Recommendations: {{ health_result.recommendations | length }}

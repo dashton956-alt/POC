@@ -1,0 +1,255 @@
+---
+# VLAN Configuration Deployment Playbook
+# Deploy VLAN configurations across network devices
+name: Deploy VLAN Configuration
+hosts: all
+gather_facts: false
+vars:
+  vlan_id: "{{ vlan_id }}"
+  vlan_name: "{{ vlan_name }}"
+  vlan_description: "{{ vlan_description | default('') }}"
+  vlan_type: "{{ vlan_type | default('data') }}"
+  trunk_allowed: "{{ trunk_allowed | default(true) }}"
+
+tasks:
+  - name: Detect device platform
+    snmp_facts:
+      host: "{{ inventory_hostname }}"
+      community: "{{ snmp_community | default('public') }}"
+      version: v2c
+    register: device_info
+    delegate_to: localhost
+    ignore_errors: true
+
+  - name: Set device platform
+    set_fact:
+      device_platform: "{{ 'cisco_ios' if 'cisco' in device_info.ansible_facts.ansible_sysdescr.lower() else 
+                           'juniper_junos' if 'juniper' in device_info.ansible_facts.ansible_sysdescr.lower() else 
+                           'arista_eos' if 'arista' in device_info.ansible_facts.ansible_sysdescr.lower() else 'generic' }}"
+    when: device_info is not failed
+
+  # CISCO IOS VLAN CONFIGURATION
+  - name: Configure VLAN on Cisco IOS
+    block:
+      - name: Create VLAN on Cisco device
+        ios_vlan:
+          vlan_id: "{{ vlan_id }}"
+          name: "{{ vlan_name }}"
+          state: present
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+
+      - name: Configure VLAN interface description
+        ios_config:
+          lines:
+            - "interface vlan {{ vlan_id }}"
+            - " description {{ vlan_description }}"
+            - " no shutdown"
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+        when: vlan_description != ""
+
+      - name: Add VLAN to trunk ports (if enabled)
+        ios_config:
+          lines:
+            - "switchport trunk allowed vlan add {{ vlan_id }}"
+          parents: "interface {{ item }}"
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+        loop: "{{ trunk_interfaces | default([]) }}"
+        when: trunk_allowed | bool
+
+      - name: Configure VLAN-specific settings based on type
+        ios_config:
+          lines: "{{ vlan_type_config }}"
+          parents: "vlan {{ vlan_id }}"
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+          vlan_type_config: |
+            {% if vlan_type == 'voice' %}
+            ['mtu 1500', 'media ethernet']
+            {% elif vlan_type == 'management' %}
+            ['shutdown', 'private-vlan isolated']
+            {% else %}
+            ['state active']
+            {% endif %}
+    when: device_platform == "cisco_ios"
+    ignore_errors: true
+
+  # JUNIPER JUNOS VLAN CONFIGURATION  
+  - name: Configure VLAN on Juniper JunOS
+    block:
+      - name: Create VLAN on Juniper device
+        junos_vlan:
+          vlan_name: "{{ vlan_name }}"
+          vlan_id: "{{ vlan_id }}"
+          description: "{{ vlan_description }}"
+          state: present
+        vars:
+          ansible_connection: netconf
+          ansible_network_os: junos
+
+      - name: Configure VLAN interface
+        junos_l3_interface:
+          name: "vlan.{{ vlan_id }}"
+          state: present
+        vars:
+          ansible_connection: netconf
+          ansible_network_os: junos
+    when: device_platform == "juniper_junos"
+    ignore_errors: true
+
+  # ARISTA EOS VLAN CONFIGURATION
+  - name: Configure VLAN on Arista EOS
+    block:
+      - name: Create VLAN on Arista device
+        eos_vlan:
+          vlan_id: "{{ vlan_id }}"
+          name: "{{ vlan_name }}"
+          state: present
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: eos
+
+      - name: Configure VLAN interface on Arista
+        eos_config:
+          lines:
+            - "interface vlan {{ vlan_id }}"
+            - " description {{ vlan_description }}"
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: eos
+        when: vlan_description != ""
+    when: device_platform == "arista_eos"
+    ignore_errors: true
+
+  # VERIFICATION
+  - name: Verify VLAN creation - Cisco
+    ios_command:
+      commands:
+        - "show vlan id {{ vlan_id }}"
+    vars:
+      ansible_connection: network_cli
+      ansible_network_os: ios
+    register: cisco_vlan_verify
+    when: device_platform == "cisco_ios"
+    ignore_errors: true
+
+  - name: Verify VLAN creation - Juniper
+    junos_command:
+      commands:
+        - "show vlans {{ vlan_name }}"
+    vars:
+      ansible_connection: netconf
+      ansible_network_os: junos
+    register: juniper_vlan_verify
+    when: device_platform == "juniper_junos"
+    ignore_errors: true
+
+  - name: Verify VLAN creation - Arista
+    eos_command:
+      commands:
+        - "show vlan {{ vlan_id }}"
+    vars:
+      ansible_connection: network_cli
+      ansible_network_os: eos
+    register: arista_vlan_verify
+    when: device_platform == "arista_eos"
+    ignore_errors: true
+
+  # COMPILE RESULTS
+  - name: Compile VLAN deployment results
+    set_fact:
+      vlan_deployment_result:
+        device: "{{ inventory_hostname }}"
+        vlan_id: "{{ vlan_id }}"
+        vlan_name: "{{ vlan_name }}"
+        platform: "{{ device_platform }}"
+        deployment_status: "{{ 'success' if (
+          (device_platform == 'cisco_ios' and cisco_vlan_verify is not failed) or
+          (device_platform == 'juniper_junos' and juniper_vlan_verify is not failed) or  
+          (device_platform == 'arista_eos' and arista_vlan_verify is not failed)
+        ) else 'failed' }}"
+        verification_output: "{{ 
+          cisco_vlan_verify.stdout[0] if device_platform == 'cisco_ios' and cisco_vlan_verify is not failed else
+          juniper_vlan_verify.stdout[0] if device_platform == 'juniper_junos' and juniper_vlan_verify is not failed else
+          arista_vlan_verify.stdout[0] if device_platform == 'arista_eos' and arista_vlan_verify is not failed else
+          'Verification failed or not performed'
+        }}"
+        timestamp: "{{ ansible_date_time.iso8601 }}"
+
+  - name: Send VLAN deployment results to orchestrator
+    uri:
+      url: "{{ callback_route }}"
+      method: POST
+      body_format: json
+      body:
+        device: "{{ inventory_hostname }}"
+        vlan_deployment_result: "{{ vlan_deployment_result }}"
+        status: "{{ vlan_deployment_result.deployment_status }}"
+    delegate_to: localhost
+    when: callback_route is defined
+
+  - name: Display VLAN deployment summary
+    debug:
+      msg: |
+        VLAN Deployment Summary for {{ inventory_hostname }}:
+        VLAN ID: {{ vlan_id }}
+        VLAN Name: {{ vlan_name }}
+        Platform: {{ device_platform }}
+        Status: {{ vlan_deployment_result.deployment_status }}
+        
+  # CONFIGURE ACCESS PORTS (if specified)
+  - name: Configure access ports for new VLAN
+    block:
+      - name: Set access ports to new VLAN - Cisco
+        ios_config:
+          lines:
+            - "switchport mode access"
+            - "switchport access vlan {{ vlan_id }}"
+          parents: "interface {{ item }}"
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+        loop: "{{ access_ports | default([]) }}"
+        when: device_platform == "cisco_ios"
+
+      - name: Set access ports to new VLAN - Juniper
+        junos_config:
+          lines:
+            - "set interfaces {{ item }} unit 0 family ethernet-switching vlan members {{ vlan_name }}"
+        vars:
+          ansible_connection: netconf
+          ansible_network_os: junos
+        loop: "{{ access_ports | default([]) }}"
+        when: device_platform == "juniper_junos"
+    when: access_ports is defined
+
+  # SAVE CONFIGURATION
+  - name: Save configuration - Cisco
+    ios_config:
+      save_when: always
+    vars:
+      ansible_connection: network_cli
+      ansible_network_os: ios
+    when: device_platform == "cisco_ios"
+
+  - name: Commit configuration - Juniper
+    junos_config:
+      comment: "VLAN {{ vlan_id }} deployment via orchestrator"
+    vars:
+      ansible_connection: netconf
+      ansible_network_os: junos
+    when: device_platform == "juniper_junos"
+
+  - name: Save configuration - Arista
+    eos_config:
+      save_when: always
+    vars:
+      ansible_connection: network_cli
+      ansible_network_os: eos
+    when: device_platform == "arista_eos"

@@ -1,0 +1,177 @@
+---
+# Backup QoS Configuration Playbook
+# Backs up current QoS configuration from network devices
+# Supports multiple platforms: Cisco IOS/NX-OS, Arista EOS, Juniper JunOS
+
+- name: Backup QoS Configuration
+  hosts: localhost
+  gather_facts: false
+  vars:
+    target_host: "{{ target_host }}"
+    device_name: "{{ device_name }}"
+    platform: "{{ platform }}"
+    backup_location: "{{ backup_location }}"
+    
+  tasks:
+    - name: Create backup directory
+      file:
+        path: "{{ backup_location | dirname }}"
+        state: directory
+        mode: '0755'
+
+    - name: Backup QoS configuration (Cisco IOS)
+      block:
+        - name: Connect to IOS device and backup QoS config
+          cisco.ios.ios_command:
+            commands:
+              - show running-config | section class-map
+              - show running-config | section policy-map
+              - show running-config interface | include service-policy
+              - show policy-map interface
+          register: ios_qos_config
+          delegate_to: "{{ target_host }}"
+          
+        - name: Save IOS QoS backup to file
+          copy:
+            content: |
+              ! QoS Configuration Backup for {{ device_name }}
+              ! Backup Date: {{ ansible_date_time.iso8601 }}
+              ! Platform: {{ platform }}
+              
+              ! Class Maps
+              {{ ios_qos_config.stdout[0] }}
+              
+              ! Policy Maps  
+              {{ ios_qos_config.stdout[1] }}
+              
+              ! Interface Service Policies
+              {{ ios_qos_config.stdout[2] }}
+              
+              ! Policy Map Statistics
+              {{ ios_qos_config.stdout[3] }}
+            dest: "{{ backup_location }}.cfg"
+            
+      when: platform == "ios"
+
+    - name: Backup QoS configuration (Arista EOS)
+      block:
+        - name: Connect to EOS device and backup QoS config  
+          arista.eos.eos_command:
+            commands:
+              - show running-config | section class-map
+              - show running-config | section policy-map
+              - show qos interfaces
+              - show qos maps
+          register: eos_qos_config
+          delegate_to: "{{ target_host }}"
+          
+        - name: Save EOS QoS backup to file
+          copy:
+            content: |
+              ! QoS Configuration Backup for {{ device_name }}
+              ! Backup Date: {{ ansible_date_time.iso8601 }}
+              ! Platform: {{ platform }}
+              
+              ! Class Maps
+              {{ eos_qos_config.stdout[0] }}
+              
+              ! Policy Maps
+              {{ eos_qos_config.stdout[1] }}
+              
+              ! QoS Interface Status
+              {{ eos_qos_config.stdout[2] }}
+              
+              ! QoS Maps
+              {{ eos_qos_config.stdout[3] }}
+            dest: "{{ backup_location }}.cfg"
+            
+      when: platform == "eos"
+
+    - name: Backup QoS configuration (Cisco NX-OS)
+      block:
+        - name: Connect to NX-OS device and backup QoS config
+          cisco.nxos.nxos_command:
+            commands:
+              - show running-config | include "class-map type qos"
+              - show running-config | include "policy-map type qos" 
+              - show running-config | include "policy-map type queuing"
+              - show policy-map interface
+          register: nxos_qos_config
+          delegate_to: "{{ target_host }}"
+          
+        - name: Save NX-OS QoS backup to file
+          copy:
+            content: |
+              ! QoS Configuration Backup for {{ device_name }}
+              ! Backup Date: {{ ansible_date_time.iso8601 }}
+              ! Platform: {{ platform }}
+              
+              ! QoS Class Maps
+              {{ nxos_qos_config.stdout[0] }}
+              
+              ! QoS Policy Maps
+              {{ nxos_qos_config.stdout[1] }}
+              
+              ! Queuing Policy Maps
+              {{ nxos_qos_config.stdout[2] }}
+              
+              ! Interface Policy Maps
+              {{ nxos_qos_config.stdout[3] }}
+            dest: "{{ backup_location }}.cfg"
+            
+      when: platform == "nxos"
+
+    - name: Backup QoS configuration (Juniper JunOS)
+      block:
+        - name: Connect to JunOS device and backup QoS config
+          junipernetworks.junos.junos_command:
+            commands:
+              - show configuration class-of-service
+              - show interfaces queue
+              - show class-of-service classifier
+              - show class-of-service scheduler-map
+            format: text
+          register: junos_qos_config
+          delegate_to: "{{ target_host }}"
+          
+        - name: Save JunOS QoS backup to file
+          copy:
+            content: |
+              # QoS Configuration Backup for {{ device_name }}
+              # Backup Date: {{ ansible_date_time.iso8601 }}
+              # Platform: {{ platform }}
+              
+              # Class of Service Configuration
+              {{ junos_qos_config.stdout[0] }}
+              
+              # Interface Queue Status
+              {{ junos_qos_config.stdout[1] }}
+              
+              # Classifier Configuration
+              {{ junos_qos_config.stdout[2] }}
+              
+              # Scheduler Maps
+              {{ junos_qos_config.stdout[3] }}
+            dest: "{{ backup_location }}.cfg"
+            
+      when: platform == "junos"
+
+    - name: Verify backup file was created
+      stat:
+        path: "{{ backup_location }}.cfg"
+      register: backup_file_stat
+      
+    - name: Report backup status
+      debug:
+        msg: |
+          QoS Configuration Backup Status:
+          Device: {{ device_name }}
+          Platform: {{ platform }}
+          Backup File: {{ backup_location }}.cfg
+          File Size: {{ backup_file_stat.stat.size | default(0) }} bytes
+          Status: {{ 'SUCCESS' if backup_file_stat.stat.exists else 'FAILED' }}
+
+    - name: Fail if backup was not created
+      fail:
+        msg: "QoS configuration backup failed - no backup file created"
+      when: not backup_file_stat.stat.exists

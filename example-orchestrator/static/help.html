@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Documentation - Intent Based Orchestrator</title>
+    <style>
+        /* Consistent styling with dashboard */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-breadcrumb {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .nav-breadcrumb a {
+            color: #1976d2;
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 24px;
+        }
+        
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .sidebar h3 {
+            color: #1976d2;
+            margin-bottom: 16px;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 8px;
+        }
+        
+        .sidebar-menu a {
+            color: #666;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: block;
+            transition: all 0.2s ease;
+        }
+        
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: #1976d2;
+            color: white;
+        }
+        
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 32px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .help-section {
+            margin-bottom: 32px;
+        }
+        
+        .help-section h2 {
+            color: #1976d2;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #e3f2fd;
+            padding-bottom: 8px;
+        }
+        
+        .help-section h3 {
+            color: #1565c0;
+            margin: 24px 0 12px 0;
+        }
+        
+        .step-list {
+            background: #f8f9fa;
+            border-left: 4px solid #1976d2;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .step-list ol {
+            margin-left: 20px;
+        }
+        
+        .step-list li {
+            margin-bottom: 8px;
+        }
+        
+        .tip-box {
+            background: linear-gradient(45deg, #e8f5e8, #f0f8f0);
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .tip-box h4 {
+            color: #2e7d32;
+            margin-bottom: 8px;
+        }
+        
+        .warning-box {
+            background: linear-gradient(45deg, #fff3e0, #fef7f0);
+            border: 1px solid #ff9800;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .warning-box h4 {
+            color: #f57c00;
+            margin-bottom: 8px;
+        }
+        
+        .code-block {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            margin: 12px 0;
+            overflow-x: auto;
+        }
+        
+        .quick-link {
+            display: inline-block;
+            background: #1976d2;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin: 4px 8px 4px 0;
+            transition: background 0.2s ease;
+        }
+        
+        .quick-link:hover {
+            background: #1565c0;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Help & Documentation</h1>
+            <p>Comprehensive guide for Intent Based Orchestrator and NetBox integration</p>
+        </div>
+        
+        <div class="nav-breadcrumb">
+            <a href="/static/dashboard.html">🏠 Dashboard</a> > Help & Documentation
+        </div>
+        
+        <div class="content-grid">
+            <aside class="sidebar">
+                <h3>📖 Navigation</h3>
+                <ul class="sidebar-menu">
+                    <li><a href="#overview" class="active">Overview</a></li>
+                    <li><a href="#getting-started">Getting Started</a></li>
+                    <li><a href="#netbox-integration">NetBox Integration</a></li>
+                    <li><a href="#device-import">Device Import</a></li>
+                    <li><a href="#workflows">Workflows</a></li>
+                    <li><a href="#troubleshooting">Troubleshooting</a></li>
+                    <li><a href="#api-reference">API Reference</a></li>
+                </ul>
+            </aside>
+            
+            <main class="main-content">
+                <section id="overview" class="help-section">
+                    <h2>🌐 Overview</h2>
+                    <p>The Intent Based Orchestrator is a comprehensive network infrastructure management platform that seamlessly integrates with NetBox DCIM to provide automated device provisioning, workflow orchestration, and infrastructure management capabilities.</p>
+                    
+                    <h3>Key Features</h3>
+                    <ul>
+                        <li><strong>NetBox Integration:</strong> Direct integration with NetBox for device and manufacturer management</li>
+                        <li><strong>Device Library Import:</strong> Automated import from community device-type library</li>
+                        <li><strong>Workflow Orchestration:</strong> Automated network configuration workflows</li>
+                        <li><strong>Real-time Monitoring:</strong> Live dashboard with system status and statistics</li>
+                    </ul>
+                    
+                    <div class="tip-box">
+                        <h4>💡 Pro Tip</h4>
+                        <p>Use the dashboard quick actions to access common operations quickly. The system automatically updates statistics every 30 seconds.</p>
+                    </div>
+                </section>
+                
+                <section id="getting-started" class="help-section">
+                    <h2>🚀 Getting Started</h2>
+                    <p>Follow these steps to begin using the Intent Based Orchestrator:</p>
+                    
+                    <div class="step-list">
+                        <h3>Initial Setup</h3>
+                        <ol>
+                            <li>Ensure NetBox is running and accessible at <code>http://localhost:8000</code></li>
+                            <li>Verify the Orchestrator Engine is running at <code>http://localhost:8080</code></li>
+                            <li>Access the main UI at <code>http://localhost:3000</code></li>
+                            <li>Check the system status on the dashboard</li>
+                        </ol>
+                    </div>
+                    
+                    <h3>Quick Actions</h3>
+                    <p>Use these links to perform common tasks:</p>
+                    <a href="http://localhost:3000/workflows" class="quick-link">🔄 Start Workflow</a>
+                    <a href="http://localhost:8000/dcim/" class="quick-link">📊 Open NetBox</a>
+                    <a href="/static/dashboard.html" class="quick-link">📈 View Dashboard</a>
+                </section>
+                
+                <section id="netbox-integration" class="help-section">
+                    <h2>🔗 NetBox Integration</h2>
+                    <p>The orchestrator provides deep integration with NetBox DCIM for comprehensive infrastructure management.</p>
+                    
+                    <h3>Connection Status</h3>
+                    <p>The dashboard shows real-time connection status to NetBox. If you see a red status indicator:</p>
+                    
+                    <div class="warning-box">
+                        <h4>⚠️ Connection Issues</h4>
+                        <ul>
+                            <li>Verify NetBox is running on port 8000</li>
+                            <li>Check network connectivity between services</li>
+                            <li>Validate API token permissions in NetBox</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>Data Synchronization</h3>
+                    <p>The system automatically synchronizes data with NetBox including:</p>
+                    <ul>
+                        <li>Device manufacturers and their device counts</li>
+                        <li>Device types with full specifications</li>
+                        <li>Component templates (interfaces, power ports, console ports)</li>
+                    </ul>
+                </section>
+                
+                <section id="device-import" class="help-section">
+                    <h2>📱 Device Import Process</h2>
+                    <p>Import device types from the community device-type library with full component support.</p>
+                    
+                    <div class="step-list">
+                        <h3>Import Workflow Steps</h3>
+                        <ol>
+                            <li><strong>Navigate to Workflows:</strong> Click "Import Device Types" on the dashboard</li>
+                            <li><strong>Select Manufacturers:</strong> Choose which manufacturers to import</li>
+                            <li><strong>Monitor Progress:</strong> Watch real-time import progress</li>
+                            <li><strong>Review Results:</strong> Check import summary and any errors</li>
+                            <li><strong>Validate in NetBox:</strong> Verify devices appear in NetBox</li>
+                        </ol>
+                    </div>
+                    
+                    <h3>Import Features</h3>
+                    <ul>
+                        <li><strong>Intelligent Filtering:</strong> Only imports new devices, skips existing ones</li>
+                        <li><strong>Component Support:</strong> Includes interfaces, power ports, console ports, and module bays</li>
+                        <li><strong>Validation:</strong> Validates device definitions before import</li>
+                        <li><strong>Error Handling:</strong> Detailed error reporting for failed imports</li>
+                    </ul>
+                    
+                    <div class="tip-box">
+                        <h4>💡 Best Practice</h4>
+                        <p>Start with a small set of manufacturers to test the import process, then expand to include more as needed.</p>
+                    </div>
+                </section>
+                
+                <section id="workflows" class="help-section">
+                    <h2>⚙️ Workflows</h2>
+                    <p>Workflows are organized into categories for easy navigation:</p>
+                    
+                    <h3>NetBox Integration Workflows</h3>
+                    <ul>
+                        <li><strong>Import Device Types:</strong> Bulk import from device-type library</li>
+                        <li><strong>Import Manufacturers:</strong> Add new manufacturers to NetBox</li>
+                        <li><strong>Sync NetBox Data:</strong> Synchronize data between systems</li>
+                    </ul>
+                    
+                    <h3>Network Operations Workflows</h3>
+                    <ul>
+                        <li><strong>Configure L2VPN:</strong> Layer 2 VPN configuration</li>
+                        <li><strong>Port Management:</strong> Network port management</li>
+                        <li><strong>Link Configuration:</strong> Network link setup</li>
+                    </ul>
+                    
+                    <h3>System Management Workflows</h3>
+                    <ul>
+                        <li><strong>System Health Check:</strong> Comprehensive system health monitoring</li>
+                        <li><strong>Backup Configuration:</strong> System backup procedures</li>
+                    </ul>
+                </section>
+                
+                <section id="troubleshooting" class="help-section">
+                    <h2>🔧 Troubleshooting</h2>
+                    <p>Common issues and their solutions:</p>
+                    
+                    <h3>NetBox Connection Issues</h3>
+                    <div class="code-block">
+                        # Check NetBox status
+                        curl http://localhost:8000/api/
+                        
+                        # Verify API token
+                        curl -H "Authorization: Token YOUR_TOKEN" http://localhost:8000/api/dcim/manufacturers/
+                    </div>
+                    
+                    <h3>Import Failures</h3>
+                    <ul>
+                        <li><strong>Duplicate Devices:</strong> The system automatically skips existing devices</li>
+                        <li><strong>Invalid YAML:</strong> Check device-type library files for syntax errors</li>
+                        <li><strong>Permission Errors:</strong> Verify NetBox API token has write permissions</li>
+                    </ul>
+                    
+                    <h3>Performance Issues</h3>
+                    <div class="tip-box">
+                        <h4>💡 Optimization Tips</h4>
+                        <ul>
+                            <li>Import devices in smaller batches</li>
+                            <li>Use the search function to find specific devices</li>
+                            <li>Monitor system resources during large imports</li>
+                        </ul>
+                    </div>
+                </section>
+                
+                <section id="api-reference" class="help-section">
+                    <h2>🔌 API Reference</h2>
+                    <p>Available API endpoints for integration and automation:</p>
+                    
+                    <h3>System Status</h3>
+                    <div class="code-block">
+                        GET /api/system-status
+                        # Returns system health and connectivity status
+                    </div>
+                    
+                    <h3>Dashboard Data</h3>
+                    <div class="code-block">
+                        GET /api/dashboard/statistics
+                        # Returns NetBox statistics and counts
+                        
+                        GET /api/dashboard/import-status
+                        # Returns current import progress and status
+                    </div>
+                    
+                    <h3>NetBox Integration</h3>
+                    <div class="code-block">
+                        GET /api/netbox/manufacturers
+                        # Returns manufacturer summary with device counts
+                        
+                        GET /api/netbox/search?q=QUERY
+                        # Search device types with optional filters
+                    </div>
+                    
+                    <h3>Workflows</h3>
+                    <div class="code-block">
+                        GET /api/workflows/categories
+                        # Returns organized workflow categories
+                        
+                        GET /api/help/netbox-integration
+                        # Returns help content for NetBox integration
+                    </div>
+                </section>
+                
+                <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
+                    <p style="color: #666;">
+                        <strong>Intent Based Orchestrator</strong> - Professional Network Infrastructure Management
+                    </p>
+                    <a href="/static/dashboard.html" class="quick-link">🏠 Return to Dashboard</a>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Update active navigation
+                    document.querySelectorAll('.sidebar-menu a').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Update active navigation based on scroll position
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.help-section');
+            const navLinks = document.querySelectorAll('.sidebar-menu a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= (sectionTop - 100)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+---
+# Device Connectivity Validation Playbook
+# Validate device reachability and gather system information
+name: Validate Device Connectivity
+hosts: all
+gather_facts: false
+vars:
+  ssh_username: "{{ ssh_username }}"
+  ssh_password: "{{ ssh_password }}"
+  snmp_community: "{{ snmp_community | default('public') }}"
+
+tasks:
+  - name: Test basic connectivity (ping)
+    ping:
+    delegate_to: localhost
+    vars:
+      ansible_host: "{{ inventory_hostname }}"
+
+  - name: Test SSH connectivity
+    wait_for:
+      host: "{{ inventory_hostname }}"
+      port: 22
+      timeout: 10
+    delegate_to: localhost
+
+  - name: Test SNMP connectivity
+    snmp_facts:
+      host: "{{ inventory_hostname }}"
+      community: "{{ snmp_community }}"
+      version: v2c
+      timeout: 10
+    register: snmp_info
+    ignore_errors: true
+    delegate_to: localhost
+
+  - name: Gather system information via SSH (Cisco)
+    block:
+      - name: Connect and gather Cisco system info
+        ios_facts:
+          gather_subset: 
+            - hardware
+            - interfaces
+            - config
+        vars:
+          ansible_connection: network_cli
+          ansible_network_os: ios
+          ansible_user: "{{ ssh_username }}"
+          ansible_password: "{{ ssh_password }}"
+        register: cisco_facts
+        when: "'cisco' in (snmp_info.ansible_facts.ansible_sysdescr | lower) or 'ios' in (snmp_info.ansible_facts.ansible_sysdescr | lower)"
+    rescue:
+      - name: Cisco SSH connection failed
+        debug:
+          msg: "SSH connection to Cisco device failed"
+
+  - name: Gather system information via SSH (Juniper)
+    block:
+      - name: Connect and gather Juniper system info
+        junos_facts:
+          gather_subset:
+            - hardware
+            - interfaces
+            - config
+        vars:
+          ansible_connection: netconf
+          ansible_network_os: junos
+          ansible_user: "{{ ssh_username }}"
+          ansible_password: "{{ ssh_password }}"
+        register: juniper_facts
+        when: "'juniper' in (snmp_info.ansible_facts.ansible_sysdescr | lower) or 'junos' in (snmp_info.ansible_facts.ansible_sysdescr | lower)"
+    rescue:
+      - name: Juniper SSH connection failed
+        debug:
+          msg: "SSH/NETCONF connection to Juniper device failed"
+
+  - name: Compile device validation results
+    set_fact:
+      validation_result:
+        device_ip: "{{ inventory_hostname }}"
+        ping_success: true
+        ssh_port_open: true
+        snmp_accessible: "{{ snmp_info is not failed }}"
+        system_info:
+          vendor: "{{ snmp_info.ansible_facts.ansible_sysdescr.split()[0] if snmp_info is not failed else 'unknown' }}"
+          model: "{{ cisco_facts.ansible_facts.ansible_net_model if cisco_facts is defined else (juniper_facts.ansible_facts.ansible_net_model if juniper_facts is defined else 'unknown') }}"
+          version: "{{ cisco_facts.ansible_facts.ansible_net_version if cisco_facts is defined else (juniper_facts.ansible_facts.ansible_net_version if juniper_facts is defined else snmp_info.ansible_facts.ansible_sysdescr.split()[-1]) }}"
+          serial_number: "{{ cisco_facts.ansible_facts.ansible_net_serialnum if cisco_facts is defined else (juniper_facts.ansible_facts.ansible_net_serialnum if juniper_facts is defined else 'unknown') }}"
+          hostname: "{{ cisco_facts.ansible_facts.ansible_net_hostname if cisco_facts is defined else (juniper_facts.ansible_facts.ansible_net_hostname if juniper_facts is defined else snmp_info.ansible_facts.ansible_sysname) }}"
+          platform: "{{ snmp_info.ansible_facts.ansible_sysdescr if snmp_info is not failed else 'unknown' }}"
+        interfaces: "{{ cisco_facts.ansible_facts.ansible_net_interfaces if cisco_facts is defined else (juniper_facts.ansible_facts.ansible_net_interfaces if juniper_facts is defined else {}) }}"
+        validation_timestamp: "{{ ansible_date_time.iso8601 }}"
+
+  - name: Send validation results to orchestrator
+    uri:
+      url: "{{ callback_route }}"
+      method: POST
+      body_format: json
+      body:
+        device_ip: "{{ inventory_hostname }}"
+        validation_results: "{{ validation_result }}"
+        status: "validated"
+    delegate_to: localhost
+    when: callback_route is defined

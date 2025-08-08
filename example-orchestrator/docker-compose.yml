@@ -55,6 +55,9 @@ services:
         required: false
     ports:
       - "3000:3000"
+    volumes:
+      - ./docker/orchestrator-ui/public/dashboard.html:/app/public/dashboard.html
+      - ./docker/orchestrator-ui/public/index.html:/app/public/enhanced-dashboard.html
     depends_on:
       orchestrator:
         condition: service_started
@@ -86,6 +89,7 @@ services:
       - ./graphql_federation.py:/home/orchestrator/graphql_federation.py
       - ./utils:/home/orchestrator/utils
       - ./services:/home/orchestrator/services
+      - ./static:/home/orchestrator/static
       - ./requirements.txt:/home/orchestrator/requirements.txt
       - ./alembic.ini:/home/orchestrator/alembic.ini
       - ./translations:/home/orchestrator/translations
